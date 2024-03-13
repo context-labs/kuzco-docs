@@ -1,0 +1,70 @@
+# Windows Linux Subsystem Setup
+
+This guide will take you through the steps to set up the Windows Subsystem for Linux (WSL), which allows you to run a Linux environment directly on Windows 10 or higher. This eliminates the need for a separate virtual machine or dual-boot setup.
+
+## Step 0. Check if Virtualization is Enabled
+
+Before you can run a Windows environment on Windows, you need to have virtualization enabled. To check this:
+
+1. Open your Task Manager.
+2. Click on the CPU tab.
+
+If virtualization is enabled, you can proceed to Step 1. If not, you may need to enable it in your BIOS. This process depends on your CPU and motherboard. For example, if you have an AMD CPU and an MSI motherboard, here is a guide: [MSI Virtualization Guide](https://www.msi.com/faq/nb-1627).
+
+## Step 1. Install Windows Subsystem for Linux
+
+1. In the Windows search bar, look up **"Turn Windows features on or off"**.
+2. Scroll down until you find **"Windows Subsystem for Linux"**.
+3. Check the box next to it and click OK. Your system will install or enable WSL and then restart.
+
+**Note:** If you encounter an error indicating that virtualization is not enabled for your machine, you may need to manually enable it in your BIOS.
+
+## Step 2. Install a Linux Distribution
+
+1. Go to the Microsoft Store and search for **Ubuntu on Windows**.
+2. Click **Get** or **Install**.
+
+Your computer may restart. Once done, you'll get a prompt to set up your UNIX login credentials. Create a username and password to proceed.
+
+## Step 3. Make Sure Your Distribution is Up to Date
+
+Run the following commands in your Linux terminal:
+
+```bash
+sudo apt-get update
+sudo apt-get upgrade
+```
+
+## Step 4. Create a Kuzco Account
+
+Sign up at [Kuzco Registration](https://kuzco.xyz/register).
+
+## Step 5. Install Kuzco Using Its Script
+
+Run the following command in your Linux terminal:
+
+```bash
+curl -fsSL https://kuzco.xyz/install.sh | sh
+```
+
+If you encounter a curl resolve error, this is likely due to a DNS issue. Reset your DNS server to Google's public DNS server, `8.8.8.8`, by running:
+
+```bash
+echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf > /dev/null
+```
+
+**Note:** This is a temporary fix for DNS issues. In systems using NetworkManager, the `/etc/resolv.conf` file may be automatically overwritten. If you frequently encounter DNS issues, consider configuring the DNS settings through the NetworkManager's GUI or configuration files instead of directly editing `/etc/resolv.conf`.
+
+After fixing any DNS issues, re-run the Kuzco installation command.
+
+## Step 6. Login and Create Your Worker
+
+Once Kuzco is installed, log in with the credentials you created in Step 4. You'll be prompted to select and name a new worker, then register it. This process may take some time as it involves downloading open-source AI models required for inference calls.
+
+You'll know the setup is complete when you see a message similar to `[Worker ######]: heartbeat`, indicating your worker is now ready to handle inference requests.
+
+**If your worker crashes or needs to be restarted, run:**
+
+```bash
+sudo kuzco worker start
+```
