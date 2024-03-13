@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://docs.kuzco.xyz
+
+# Sitemaps
+Sitemap: https://docs.kuzco.xyz/sitemap.xml
