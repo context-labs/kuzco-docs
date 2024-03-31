@@ -71,9 +71,15 @@ What to do when receiving this error?
 
 1. **Determine if these instruction sets are disabled on your device with the following commands.**
 
-For Mac: `sysctl -a | grep machdep.cpu`
+For Mac:
+```bash
+sysctl -a | grep machdep.cpu
+```
 
-For Linux: `lscpu | grep Flags`
+For Linux:
+```bash
+lscpu | grep Flags
+```
 
 Look for `avx`, `avx2`, and `fma`. If one of them is missing, this is one of the most probable cause of the error.
 
