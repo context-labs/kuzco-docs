@@ -43,7 +43,7 @@ const theme = {
       type: "website",
       locale: "en_IE",
       url: "https://kuzco.xyz",
-      siteName: "Kuzco Documentation | Build AI-Powered chatbots",
+      siteName: "Kuzco Documentation",
       description: "LLM inference network built on Solana",
       images: [
         {
