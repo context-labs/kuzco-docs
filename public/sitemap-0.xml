@@ -1,29 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
-<url><loc>https://docs.kuzco.xyz</loc><lastmod>2023-05-19T21:46:14.887Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/bots</loc><lastmod>2023-05-19T21:46:14.887Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/bots/bot-modal</loc><lastmod>2023-05-19T21:46:14.887Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/bots/bot-settings</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/bots/chat-with-your-bot</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/bots/creating-bots</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/bots/installing-bots</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/bots/installing-bots/click-event-launcher</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/bots/installing-bots/discord-integration</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/bots/installing-bots/floating-launcher</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/bots/installing-bots/slack-integration</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/bots/models</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/bots/monitor-queries</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/bots/view-bot</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/feed</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/inviting-teammates</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/pricing</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/quick-start</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/settings</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/sources</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/sources/archive-a-source</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/sources/creating-sources</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/sources/data-types</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/sources/documents</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/sources/syncing</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://docs.kuzco.xyz/usage</loc><lastmod>2023-05-19T21:46:14.888Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://docs.kuzco.xyz</loc><lastmod>2024-04-06T15:17:54.140Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://docs.kuzco.xyz/faqs</loc><lastmod>2024-04-06T15:17:54.140Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://docs.kuzco.xyz/quick-start</loc><lastmod>2024-04-06T15:17:54.140Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://docs.kuzco.xyz/support/dashboard</loc><lastmod>2024-04-06T15:17:54.140Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://docs.kuzco.xyz/support/general</loc><lastmod>2024-04-06T15:17:54.140Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://docs.kuzco.xyz/support/worker</loc><lastmod>2024-04-06T15:17:54.140Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://docs.kuzco.xyz/wsl-setup</loc><lastmod>2024-04-06T15:17:54.140Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
 </urlset>
