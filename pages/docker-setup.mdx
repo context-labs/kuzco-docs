@@ -1,0 +1,181 @@
+import { Callout, Steps, Step } from "nextra-theme-docs";
+
+# Docker Setup
+
+<Callout type="warning">
+	Last Updated: April 19, 2024
+</Callout>
+
+This guide will take you through the steps of setting up Kuzco with Docker. Originally written by [Hrishi Olickel](https://olickel.com/about-me)
+
+### What is **Docker**?
+
+[Docker](https://www.docker.com/) helps developers build, share, run, and verify applications anywhere without tedious environment configuration or management. It does this by [containerizing](https://aws.amazon.com/what-is/containerization/) your applications in specified virtual environments.
+
+## Step 0. Get what you need
+
+In this guide, you only need two (2) things: Docker image and runner script.
+
+The Docker Image and runner script can be downloaded [here](/)
+
+## Step 0. Docker on Linux
+
+<Callout type="warning">
+A100s are known issues due to problems from Ollama and `.so` drivers.
+</Callout>
+
+Make sure you have the basics and your system is updated.
+
+```bash
+sudo apt update && sudo apt -y install build-essential curl ca-certificates nvtop
+```
+
+Check that you have an Nvidia GPU enabled and working on the base system.
+
+```bash
+sudo nvidia-smi
+```
+
+You should see something similar to below.
+
+```bash
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 535.113.01             Driver Version: 535.113.01   CUDA Version: 12.2     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA GeForce RTX 4090        Off | 00000000:04:00.0 Off |                  Off |
+|  0%   28C    P2              68W / 450W |   4950MiB / 24564MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+| |
++---------------------------------------------------------------------------------------+
+```
+
+## Step 1. Installing Docker Engine
+
+Follow Docker's official installation guide [here](https://docs.docker.com/engine/install/ubuntu/) if you experience any isues.
+
+Run the commands below to install the Docker Engine. 
+
+Here's a summary of what it does:
+
+1. It downloads the packages needed for installation and verifies its validity.
+2. It updates the local package index to fetch the most updated information from the repositories.
+3. It installs the Docker Engine package including all of its dependencies.
+
+```bash
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+chmod a+r /etc/apt/keyrings/docker.asc
+echo   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" |   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+
+Test your installation by running the command below.
+
+```bash
+sudo docker run hello-world
+```
+
+Step 2. Install the NVIDIA container runtime
+
+Run the commands below but you can visit [this guide] to give you a more comprehensive and in-depth set instructions.
+
+```bash
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
+    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+
+sudo apt update
+sudo apt install -y nvidia-container-toolkit
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
+```
+
+Step 3. Make sure Docker can see your GPUs 
+
+Run the command below to check.
+
+```bash
+docker run --rm -it --runtime=nvidia --gpus=all nvidia/cuda:12.3.2-runtime-ubuntu22.04 nvidia-smi
+```
+
+You should get a similar output to below.
+
+```bash
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.3.2
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+Tue Mar 12 03:01:17 2024
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 535.113.01             Driver Version: 535.113.01   CUDA Version: 12.3     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA GeForce RTX 4090        Off | 00000000:04:00.0 Off |                  Off |
+|  0%   29C    P2              68W / 450W |   4950MiB / 24564MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
++---------------------------------------------------------------------------------------+
+```
+
+Step 4. Install Kuzco on the base machine
+
+It's better for your disk usage to have the models already on the base machine and later on `symlink` them into containers. This will allow you to use the same downloaded models across differnet containers should you see it useful.
+
+Step 5. Pull and start the base image
+
+Let's name our container `kuzco`. 
+
+Now that you have the models downloaded, let's share the models across containers with the command below.
+
+```bash
+docker run --rm --runtime=nvidia --gpus=all -v /home/samheutmaker/.kuzco/models:/home/samheutmaker/.kuzco/models --name kuzco -d hrishioa/kuzco
+```
+
+Verify that the container is running with `docker ps`.
+
+Step 6. Init and run Kuzco
+
+Don't start the worker, just log in and create (or register) your worker.
+
+```bash
+docker exec -it kuzco kuzco init
+```
+
+There's also a Kuzco task manager (`run.ts`) included in the image, that will monitor for idle messages from Kuzco and restart if too many heartbeats show up with no inference. The runner should also let you run containers headlessly, and pass the logs through to `docker logs`.
+
+```bash
+docker exec -itd kuzco1 bash -c "cd /kuzco_runner && /root/.bun/bin/bun run_kuzco.ts"
+```

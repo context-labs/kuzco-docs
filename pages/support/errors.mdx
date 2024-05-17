@@ -1,0 +1,19 @@
+import { Callout, Link } from "nextra-theme-docs";
+
+# Common Errors
+
+## `ERR_SYSTEM_ERROR: Failed to get cpu information`
+
+This error is caused by one of the following:
+
+1. Kuzco unsupported chipset. 
+
+2. An outdated version of Kuzco.
+
+## `NatsError: TIMEOUT`, `NatsError: 503`, `TypeError: Load failed`, `NatsError: CONNECTION_CLOSED`
+
+Kuzco is currently under **heavy development** to bring you a more stable and reliable experience. This error means that the network is currently intermittent.
+
+A common resolution is to wait as the **Kuzco team investigates and work on eliminating the cause of these instabilities**.
+
+After the Kuzco team resolves the problem, restart your worker with `sudo kuzco worker start`.

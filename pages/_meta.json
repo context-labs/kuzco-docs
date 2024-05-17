@@ -2,5 +2,6 @@
   "index": "Introduction",
   "quick-start": "Quick Start",
   "wsl-setup": "Windows Setup",
-  "faqs": "Frequently Asked Questions (FAQs)"
+  "docker-setup": "Docker Setup",
+  "support": "Support"
 }
