@@ -1,12 +1,16 @@
-import { Callout } from "nextra-theme-docs";
+import { Callout, Link } from "nextra-theme-docs";
 
-# Dashboard Common Errors
+# Common Errors
 
-<Callout type="warning">
-	Last Updated: April 6, 2024
-</Callout>
+## `ERR_SYSTEM_ERROR: Failed to get cpu information`
 
-## `NatsError: 503`, `TypeError: Load failed`, `NatsError: CONNECTION_CLOSED`
+This error is caused by one of the following:
+
+1. Kuzco unsupported chipset. 
+
+2. An outdated version of Kuzco.
+
+## `NatsError: TIMEOUT`, `NatsError: 503`, `TypeError: Load failed`, `NatsError: CONNECTION_CLOSED`
 
 Kuzco is currently under **heavy development** to bring you a more stable and reliable experience. This error means that the network is currently intermittent.
 

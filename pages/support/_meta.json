@@ -1,5 +1,5 @@
 {
-  "general": "General",
-  "dashboard": "Dashboard",
-  "worker": "Worker"
+  "faqs": "FAQs",
+  "errors": "Common Errors",
+  "gpu": "Supported GPUs"
 }
