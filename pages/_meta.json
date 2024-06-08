@@ -1,7 +1,7 @@
 {
   "index": "Introduction",
   "quick-start": "Quick Start",
-  "wsl-setup": "Windows Setup",
+  "wsl-setup": "WSL Setup",
   "docker-setup": "Docker Setup",
   "support": "Support"
 }
