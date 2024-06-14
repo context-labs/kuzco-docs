@@ -1,47 +1,69 @@
 import { Callout, Steps, Step } from "nextra-theme-docs";
+import { WIP } from "../components/WIP";
 
 # Quick Start
 
-<Callout type="warning">
-  This documentation is a work in progress. [Join Discord](https://discord.com/invite/kuzco) for more information.
-</Callout>
+<WIP />
 
-Kuzco has hardware requirements:
-- NVIDIA or AMD GPUs with minimum 8GB VRAM
-- M-series chips if using macOS with 16GB RAM recommended
+## macOS
 
-Kuzco can run via Linux CLI, Windows desktop application, or as a macOS desktop app. 
+### Desktop App
 
-The following instructions will guide you through the installation process for each platform.
+The easiest way to get started with Kuzco on macOS is to download and install the Kuzco macOS app from the [official website](https://kuzco.xyz/download).
 
-## Get the Kuzco Console or CLI
+Launch the app and follow the on-screen instructions to set up your account and launch a worker.
 
-1. Download the Kuzco Console app or Kuzco CLI from the official website [here](https://kuzco.xyz/download).
-2. If you are on macOS, Install the app by dragging it to your Applications folder. If you are on Windows, run the installer after extracting it from the zip.
-3. Launch the Kuzco app and follow the on-screen instructions to set up your node and connect to the network.
-4. Once connected, you can start contributing your idle compute power and explore the app's features.
+### CLI
 
-## Kuzco Linux CLI Tool
+Kuzco can also be run as a CLI tool on macOS. To install Kuzco CLI, run following command in your terminal:
 
-<Callout type="warning">
-The CLI tooling is currently built to run on Linux distributions only. It does not currently run on MacOS and Windows Subsystem for Linux is not officially supported.
-</Callout>
+```
+curl -fsSL https://kuzco.xyz/install.sh | sh
+```
 
-1. Open a terminal on your Linux machine.
-2. Run the following command to install the Kuzco CLI tool:
+After installation, [register your account](https://kuzco.xyz/register). Make sure to verify your email to complete the registration process.
 
-   ```
-   curl -fsSL https://kuzco.xyz/install.sh | sh
-   ```
+Next, run the following command to initialize your Kuzco worker:
 
-3. After installation, run the following command to initialize your Kuzco node:
+```
+kuzco init
+```
 
-   ```
-   kuzco init
-   ```
+This command will guide you through creating a running a Kuzco worker.
 
-4. If this command fails you may need to re-run as `sudo`.
-5. Follow the prompts to configure your node and connect to the Kuzco network.
-6. Once connected, you can start contributing your idle compute power and use the CLI tool to interact with the network.
+## Windows
 
-For more detailed instructions and advanced configuration options, refer to the respective sections of the documentation.
+### Desktop App
+
+The easiest way to get started with Kuzco on Windows is to download and install the Kuzco Windows app from the [official website](https://kuzco.xyz/download).
+
+Launch the app and follow the on-screen instructions to set up your account and launch a worker.
+
+### WSL
+
+Kuzco can also be run on Windows Subsystem for Linux (WSL). Checkout out our [WSL guide](/wsl) to get started.
+
+## Linux
+
+Run the following command to install Kuzco on Linux:
+
+```
+curl -fsSL https://kuzco.xyz/install.sh | sh
+```
+
+After installation, [register your account](https://kuzco.xyz/register). Make sure to verify your email to complete the registration process.
+
+Next, run the following command to initialize your Kuzco worker:
+
+```
+kuzco init
+```
+
+This command will guide you through creating a running a Kuzco worker.
+
+
+## Next Steps
+
+1. Checkout the official guide to running Kuzco in Docker [here](https://docs.kuzco.xyz/docker).
+2. Check out the list of officially supported hardware [here](https://docs.kuzco.xyz/hardware).
+3. Join the [Kuzco Discord](https://discord.gg/kuzco) for more information and support.
