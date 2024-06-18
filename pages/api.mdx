@@ -1,0 +1,25 @@
+import { Callout, Link, Step, Steps } from "nextra-theme-docs";
+
+# Kuzco Public API
+
+## Desktop and CLI Latest Versions
+```
+Endpoint: https://relay.kuzco.xyz/api/versions
+Method: GET
+```
+### Description:
+
+This endpoint returns the latest version information for both "desktop" and "cli" applications.
+
+Response:
+Status Code: 200 OK
+
+Content-Type: application/json
+
+### Usage:
+
+To retrieve the latest version information, send a GET request to the /api/versions endpoint. The response will include the latest versions for both the "desktop" and "cli" applications.
+
+Sample Request:
+`curl -X GET https://relay.kuzco.xyz/api/versions`
+
