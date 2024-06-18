@@ -2,5 +2,6 @@
   "index": "Introduction",
   "quick-start": "Quick Start",
   "wsl-setup": "WSL Setup",
+  "api": "API",
   "hardware": "Hardware"
 }
