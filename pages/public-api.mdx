@@ -4,7 +4,7 @@ import { Callout, Link, Step, Steps } from "nextra-theme-docs";
 
 ## Desktop and CLI Latest Versions API
 ```
-Endpoint: https://relay.kuzco.xyz/api/versions
+Endpoint: https://relay.kuzco.xyz/public/versions
 Method: GET
 ```
 
@@ -21,6 +21,14 @@ Content-Type: application/json
 
 To retrieve the latest version information, send a GET request to the /api/versions endpoint. The response will include the latest versions for both the "desktop" and "cli" applications.
 
-Sample Request:
-`curl -X GET https://relay.kuzco.xyz/api/versions`
+#### Sample Request:
+`curl -X GET https://relay.kuzco.xyz/public/versions`
+
+#### Example Output:
+```
+{
+  "desktop": "0.0.7-677c61c",
+  "cli": "0.0.6-183e508"
+}
+```
 
