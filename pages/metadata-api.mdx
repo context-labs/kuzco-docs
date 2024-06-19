@@ -1,0 +1,49 @@
+import { Callout, Link, Step, Steps } from "nextra-theme-docs";
+
+# Metadata API
+
+Kuzco exposes a set of endpoints that provide up-to-date information about the network and the nodes in the network to allow for the creation of custom dashboards, scripts, and tools. All the endpoints are unauthenticated and are available for public use.
+
+## Current Versions
+
+Returns the current version information for both `desktop` and `cli` applications.
+
+Sample Request:
+`curl -X GET https://relay.kuzco.xyz/public/versions`
+
+```json
+{
+  "desktop": "0.0.7-1f8a5f6",
+  "cli": "0.0.6-1f8a5f6"
+}
+```
+
+## Network Hardware
+
+Returns a list of all the GPUs currently connected to the Kuzco network. Refreshes every 1 minute.
+
+Sample Request:
+`curl -X GET https://relay.kuzco.xyz/public/hardware`
+
+```json
+{
+  "gpus": [
+    {
+      "gpu": "NVIDIA GeForce RTX 4090",
+      "count": 2,
+      "totalVRAM": "48 GB",
+      "type": "NVIDIA",
+      "percentage": 0.25
+    },
+    {
+      "gpu": "NVIDIA GeForce RTX 3060",
+      "count": 6,
+      "totalVRAM": "72 GB",
+      "type": "NVIDIA",
+      "percentage": 0.75
+    }
+  ],
+  "gpuCount": 8,
+  "totalVRAM": "120 GB"
+}
+```
