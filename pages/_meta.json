@@ -2,6 +2,7 @@
   "index": "Introduction",
   "quick-start": "Quick Start",
   "wsl-setup": "WSL Setup",
+  "docker": "Docker Setup",
   "hardware": "Hardware",
   "support": "Support",
   "metadata-api": "Metadata API"
