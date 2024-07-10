@@ -42,6 +42,10 @@ Welcome to the Kuzco Docker setup guide! This document provides detailed instruc
    ```sh
    docker run --rm --runtime=nvidia --gpus '"device=0"' -d kuzcoxyz/worker:latest --worker <workerid> --code <code>
    ```
+
+   ```sh
+   For example, '"device=2,3"' will enumerate GPUs 2 and 3 to the container.
+   ```
 [![asciicast](https://asciinema.org/a/667540.svg)](https://asciinema.org/a/667540)
 
 Once your docker instances are running you will see them in your Worker on https://kuzco.xyz
@@ -74,6 +78,9 @@ Once your docker instances are running you will see them in your Worker on https
    To specify a particular GPU, use (0 being GPU #0):
    ```sh
    docker run --rm --runtime=nvidia --gpus '"device=0"' -d kuzcoxyz/worker:latest --worker <workerid> --code <code>
+   ```
+   ```sh
+   For example, '"device=2,3"' will enumerate GPUs 2 and 3 to the container.
    ```
 
 [![asciicast](https://asciinema.org/a/667540.svg)](https://asciinema.org/a/667540)
