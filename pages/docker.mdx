@@ -3,31 +3,99 @@ import { Callout, Steps, Step } from "nextra-theme-docs";
 # Kuzco Docker
 
 ### Steps
+
 1. Download and install Docker or Docker Desktop
 2. Navigate and login to https://kuzco.xyz
 3. Select Workers, then continue to "Create Worker"
 4. Select Docker Worker
 5. After, click "Start Instance" and you will see instructions and commands to use with Docker for either NVIDIA or AMD Kuzco Docker Containers
 
+### Windows (NVIDIA)
+
+#### Steps
+
+1. **Download and Install Docker**
+   - Visit the [Docker documentation](https://docs.docker.com/get-docker/) to install Docker for Windows.
+
+2. **Install NVIDIA Container Toolkit**
+   - Visit the [NVIDIA Container Toolkit documentation](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) to set up the NVIDIA runtime for Docker.
+   - Follow the instructions specific to Windows.
+
+3. **Pull Docker Image**
+   ```sh
+   docker pull kuzcoxyz/worker:latest
+   ```
+   Docker image download may take a few minutes to complete. (Model Weights included)
+
+4. **Run NVIDIA Worker Instance**
+
+(You can run this command as many times as your GPU or GPUs will fit) (e.g. Llama3 8B takes roughly ~5GB of VRAM, so if you have a 12GB VRAM GPU, you can run this following command two times to run two instances)
+   ```sh
+   docker run --rm --runtime=nvidia --gpus all -d kuzcoxyz/worker:latest --worker <workerid> --code <code>
+   ```
+
+   To specify a particular GPU, use (0 being GPU #0):
+   ```sh
+   docker run --rm --runtime=nvidia --gpus '"device=0"' -d kuzcoxyz/worker:latest --worker <workerid> --code <code>
+   ```
+
+
+
+### Linux (NVIDIA and AMD)
+
+#### Steps
+
+1. **Download and Install Docker**
+   - Visit the [Docker documentation](https://docs.docker.com/get-docker/) to install Docker for Linux.
+
+2. **For NVIDIA: Install NVIDIA Container Toolkit**
+   - Visit the [NVIDIA Container Toolkit documentation](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) to set up the NVIDIA runtime for Docker.
+   - Follow the instructions specific to your Linux distribution.
+
+3. **Pull Docker Image**
+   ```sh
+   docker pull kuzcoxyz/worker:latest
+   ```
+   Docker image download may take a few minutes to complete. (Model Weights included)
+
+4. **Run NVIDIA Worker Instance**
+(You can run this command as many times as your GPU or GPUs will fit) (e.g. Llama3 8B takes roughly ~5GB of VRAM, so if you have a 12GB VRAM GPU, you can run this following command two times to run two instances)
+   ```sh
+   docker run --rm --runtime=nvidia --gpus all -d kuzcoxyz/worker:latest --worker <workerid> --code <code>
+   ```
+
+   To specify a particular GPU, use (0 being GPU #0):
+   ```sh
+   docker run --rm --runtime=nvidia --gpus '"device=0"' -d kuzcoxyz/worker:latest --worker <workerid> --code <code>
+   ```
+
+5. **For AMD: Install ROCm and Configure Docker**
+   - Visit the [ROCm documentation](https://rocmdocs.amd.com/en/latest/Installation_Guide/Installation-Guide.html) to install ROCm on your Linux distribution.
+   - Configure Docker to work with ROCm following [these instructions](https://rocmdocs.amd.com/en/latest/Installation_Guide/Using-ROCm-Docker.html).
+
+6. **Run AMD Worker Instance**
+(You can run this command as many times as your GPU or GPUs will fit) (e.g. Llama3 8B takes roughly ~5GB of VRAM, so if you have a 12GB VRAM GPU, you can run this following command two times to run two instances)
+   ```sh
+   docker run --rm --device=/dev/kfd --device=/dev/dri --group-add video --group-add 110 --security-opt seccomp=unconfined -d kuzcoxyz/workeramd:latest --worker <workerid> --code <code>
+   ```
+
 ### Useful Commands
 
-To list all running docker containers: `docker ps`
+To list all running Docker containers:
+```sh
+docker ps
+```
 
-To stop all running docker containers: `docker stop <containerid from docker ps>`
-
-
-
-
-
-
-
-
+To stop all running Docker containers:
+```sh
+docker stop $(docker ps -q)
+```
 
 ### Extra Helper Scripts
 
-Run the below script with a crontab job to check for docker image updates automatically. (For NVIDIA only)
+Run the below script with a crontab job to check for Docker image updates automatically (for NVIDIA only).
 
-```
+```bash
 #!/bin/bash
 
 # Variables
@@ -70,3 +138,5 @@ done
 
 echo "$NUM_CONTAINERS containers started with image $IMAGE_NAME using worker $WORKER and code $CODE."
 ```
+
+If you have any issues, join our Discord for help.
