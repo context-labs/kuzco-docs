@@ -3,6 +3,7 @@
   "quick-start": "Quick Start",
   "wsl-setup": "WSL Setup",
   "docker": "Docker Setup",
+  "kuzco-cli": "Kuzco CLI",
   "hardware": "Hardware",
   "support": "Support",
   "metadata-api": "Metadata API"
