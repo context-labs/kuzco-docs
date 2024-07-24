@@ -35,7 +35,7 @@ Kuzco CLI provides several commands to manage the worker running in systemd.
 To start your worker and install it into systemd, use the following command with the `--background` flag, which will install the `kuzco.service` in your systemd:
 
 ```sh
-kuzco worker start --background --worker <worker> --code <code>
+sudo kuzco worker start --background --worker <worker> --code <code>
 ```
 
 There is an optional `--follow` flag also which will output the worker logs if ran with `--background`
@@ -53,7 +53,7 @@ kuzco worker status
 To stop the running Kuzco worker in systemd, use:
 
 ```sh
-kuzco worker stop
+sudo kuzco worker stop
 ```
 
 ### Restarting a Worker
@@ -61,7 +61,7 @@ kuzco worker stop
 To restart the running Kuzco worker in systemd, execute:
 
 ```sh
-kuzco worker restart
+sudo kuzco worker restart
 ```
 
 ### Viewing Worker Logs
@@ -69,7 +69,7 @@ kuzco worker restart
 To view the current running logs of Kuzco in systemd, you can use:
 
 ```sh
-kuzco worker logs
+sudo kuzco worker logs
 ```
 
 ## Kuzco Worker Command Usage
