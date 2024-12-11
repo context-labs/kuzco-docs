@@ -2,103 +2,55 @@ import { Callout, Steps, Step } from "nextra-theme-docs";
 
 # Kuzco Docker
 
-Welcome to the Kuzco Docker setup guide! This document provides detailed instructions for deploying Kuzco Workers using Docker on both Windows and Linux systems, supporting both NVIDIA and AMD GPUs. Follow these steps to install Docker, configure the necessary GPU runtimes, and launch your Kuzco Worker instances efficiently. Whether you're utilizing multiple GPUs or specifying individual ones, this guide will help you maximize your hardware capabilities. Additionally, we've included useful commands and extra helper scripts to streamline your setup and maintenance process. For visual learners, reference images and an Asciinema recording are provided. Join our Discord community if you need further assistance.
+<Callout emoji="💡">
+As of Dec 2024, we have changed the Docker image used for Kuzco Workers. Learn more [here](#deprecation-notice).
+</Callout>
+
+Welcome to the Kuzco Docker setup guide. This document provides detailed instructions to deploy Kuzco Workers using Docker. If you are unfamilar with Docker, please refer to the [Docker documentation](https://docs.docker.com/get-started/). Join us on Discord if you need further assistance.
+
+### Requirements
+ - Linux OS
+ - Any NVIDIA GPU found in our list of [supported hardware](/hardware)
+ - Docker.
 
 ### Getting Started
-1. Download and install Docker or Docker Desktop
-2. Navigate and login to https://kuzco.xyz
-3. Select Workers, then continue to "Create Worker"
-4. Select Docker Worker
-5. After, click "Launch Worker" and you will see instructions and commands to use with Docker for either NVIDIA or AMD Kuzco Docker Containers
+1. Register a Kuzco account at [https://kuzco.xyz/register](https://kuzco.xyz/register)
+2. Verify your email
+3. On the dashboard, navigate to the "Workers" tab on the left.
+4. Click "Create Worker" in the top right-hander corner.
+5. Enter a name for your worker, make sure "Docker" is selected, and click "Create Worker".
+6. On the Worker Details page, click "Launch Worker" in the top right-hander corner.
+7. Follow the instructions in the pop-up window to run the Kuzco Docker container.
+8. The last step should be running the `docker run ...` command with your worker id and code.
+
+Once your worker is started, you will see it enter the "Initializing" state on the dashboard. This means that your worker is preparing to accept tasks. Depending on the speed of your GPU, this process may take up to 10 minutes, but generally only takes a minute or two.
 
 
-![image](https://github.com/context-labs/kuzco-docs/assets/10162347/57cabfc0-6e0d-4b5a-acde-c327b4ff305f)
-![image](https://github.com/context-labs/kuzco-docs/assets/10162347/033105f4-4e9a-425c-a07f-93f1f9f453ca)
+### Best Practices
 
+Below are a few best practices to help you get the most out of your Kuzco Worker and avoid common issues.
 
-### Windows (NVIDIA)
+#### Automatic Recovery
+Docker natively supports restarting a container when it crashes via the `--restart=always` flag. If you would like to automatically restart your worker when it crashes, you can include this flag when you start the container.
 
-1. **Download and Install Docker**
-   - Visit the [Docker documentation](https://docs.docker.com/get-docker/) to install Docker for Windows.
+For example:
+```sh
+ docker run --restart=always --rm --runtime=nvidia --gpus all -e CACHE_DIRECTORY=/root/models  -v ~/.kuzco/models:/root/models kuzcoxyz/amd64-ollama-nvidia-worker --worker <workerid> --code <code>
+```
 
-2. **Install NVIDIA Container Toolkit**
-   - Visit the [NVIDIA Container Toolkit documentation](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) to set up the NVIDIA runtime for Docker.
-   - Follow the instructions specific to Windows.
+Make sure to replace `<workerid>` and `<code>` with your actual worker id and code.
 
-3. **Pull Docker Image**
-   ```sh
-   docker pull kuzcoxyz/worker:latest
-   ```
-   Docker image download may take a few minutes to complete. (Model Weights included)
+#### Running Multiples Instances
 
-4. **Run NVIDIA Worker Instance**
+If you have multiple GPUs, you can run multiple instances of your worker by starting a container for each GPU and passing the `--gpus` flag to the container.
 
-(You can run this command as many times as your GPU or GPUs will fit) (e.g. Llama3 8B takes roughly ~5GB of VRAM, so if you have a 12GB VRAM GPU, you can run this following command two times to run two instances)
-   ```sh
-   docker run --rm --runtime=nvidia --gpus all -d kuzcoxyz/worker:latest --worker <workerid> --code <code>
-   ```
+To start a container with GPU #0, you can use the following command:
+```sh
+docker run --rm --runtime=nvidia --gpus "device=0" -e CACHE_DIRECTORY=/root/models  -v ~/.kuzco/models:/root/models kuzcoxyz/amd64-ollama-nvidia-worker --worker <workerid> --code <code>
+```
 
-   To specify a particular GPU, use (0 being GPU #0):
-   ```sh
-   docker run --rm --runtime=nvidia --gpus '"device=0"' -d kuzcoxyz/worker:latest --worker <workerid> --code <code>
-   ```
+You will need to run this command for each GPU you have, updating the number in the `device=` flag to the appropriate GPU number.
 
-   ```sh
-   For example, '"device=2,3"' will enumerate GPUs 2 and 3 to the container.
-   ```
-[![asciicast](https://asciinema.org/a/667540.svg)](https://asciinema.org/a/667540)
-
-Once your docker instances are running you will see them in your Worker on https://kuzco.xyz
-
-![image](https://github.com/context-labs/kuzco-docs/assets/10162347/d00cf7d3-2072-49f6-ab7c-9a67f1de1ccf)
-
-
-### Linux (NVIDIA and AMD)
-
-1. **Download and Install Docker**
-   - Visit the [Docker documentation](https://docs.docker.com/get-docker/) to install Docker for Linux.
-
-2. **For NVIDIA: Install NVIDIA Container Toolkit**
-   - Visit the [NVIDIA Container Toolkit documentation](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) to set up the NVIDIA runtime for Docker.
-   - Follow the instructions specific to your Linux distribution.
-
-3. **Pull Docker Image**
-   ```sh
-   docker pull kuzcoxyz/worker:latest
-   ```
-   Docker image download may take a few minutes to complete. (Model Weights included)
-
-4. **Run NVIDIA Worker Instance**
-
-(You can run this command as many times as your GPU or GPUs will fit) (e.g. Llama3 8B takes roughly ~5GB of VRAM, so if you have a 12GB VRAM GPU, you can run this following command two times to run two instances)
-   ```sh
-   docker run --rm --runtime=nvidia --gpus all -d kuzcoxyz/worker:latest --worker <workerid> --code <code>
-   ```
-
-   To specify a particular GPU, use (0 being GPU #0):
-   ```sh
-   docker run --rm --runtime=nvidia --gpus '"device=0"' -d kuzcoxyz/worker:latest --worker <workerid> --code <code>
-   ```
-   ```sh
-   For example, '"device=2,3"' will enumerate GPUs 2 and 3 to the container.
-   ```
-
-[![asciicast](https://asciinema.org/a/667540.svg)](https://asciinema.org/a/667540)
-
-Once your docker instances are running you will see them in your Worker on https://kuzco.xyz
-
-![image](https://github.com/context-labs/kuzco-docs/assets/10162347/d00cf7d3-2072-49f6-ab7c-9a67f1de1ccf)
-
-5. **For AMD: Install ROCm and Configure Docker**
-   - Visit the [ROCm documentation](https://rocmdocs.amd.com/en/latest/Installation_Guide/Installation-Guide.html) to install ROCm on your Linux distribution.
-   - Configure Docker to work with ROCm following [these instructions](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/how-to/docker.html).
-
-6. **Run AMD Worker Instance**
-
-(You can run this command as many times as your GPU or GPUs will fit) (e.g. Llama3 8B takes roughly ~5GB of VRAM, so if you have a 12GB VRAM GPU, you can run this following command two times to run two instances)
-   ```sh
-   docker run --rm --device=/dev/kfd --device=/dev/dri --group-add video --group-add 110 --security-opt seccomp=unconfined -d kuzcoxyz/workeramd:latest --worker <workerid> --code <code>
-   ```
 
 ### Useful Commands
 
@@ -112,52 +64,6 @@ To stop all running Docker containers:
 docker stop $(docker ps -q)
 ```
 
-### Extra Helper Scripts
+### Deprecation Notice
 
-Run the below script with a crontab job to check for Docker image updates automatically (for NVIDIA only).
-
-```bash
-#!/bin/bash
-
-# Variables
-IMAGE_NAME="kuzcoxyz/worker:latest"
-NUM_CONTAINERS=${1:-1}
-WORKER=${2:-"default_worker"}
-CODE=${3:-"default_code"}
-
-# Command arguments
-COMMAND_ARGS="--worker $WORKER --code $CODE"
-
-# Pull the latest image
-docker pull $IMAGE_NAME
-
-# Function to start a container with a specific GPU
-start_container() {
-    local container_name=$1
-    local gpu_device=$2
-    docker run --rm --runtime=nvidia --gpus "device=$gpu_device" -d --name $container_name $IMAGE_NAME $COMMAND_ARGS
-}
-
-# Stop and remove all running containers of the specified image
-running_containers=$(docker ps --filter "ancestor=$IMAGE_NAME" -q)
-if [ ! -z "$running_containers" ]; then
-    docker stop $running_containers
-fi
-
-sleep 5
-
-# Get the list of available GPU devices
-gpu_devices=$(nvidia-smi --query-gpu=index --format=csv,noheader)
-gpu_array=($gpu_devices)
-num_gpus=${#gpu_array[@]}
-
-# Start the specified number of containers, evenly distributing GPUs
-for i in $(seq 1 $NUM_CONTAINERS); do
-    gpu_index=$(( (i - 1) % num_gpus ))
-    start_container "${IMAGE_NAME//[:\/]/_}_$i" "${gpu_array[$gpu_index]}"
-done
-
-echo "$NUM_CONTAINERS containers started with image $IMAGE_NAME using worker $WORKER and code $CODE."
-```
-
-If you have any issues, join our Discord for help.
+As the start of Epoch 2 (Dec 2024), we have deprecated the  `kuzcoxyz/worker` image. Please use the `kuzcoxyz/amd64-ollama-nvidia-worker` image instead.
