@@ -4,175 +4,78 @@ import { Callout, Steps, Step } from "nextra-theme-docs";
 
 Kuzco supports many different hardware configurations across Mac, Windows, and Linux. This page provides a list of the most common hardware that Kuzco supports.
 
+
 **Minimum System Requirements**:
 
+- A GPU in the list below with **at least 16GB of VRAM**
 - 16GB RAM
 - 30GB free disk space
 - Reliable 10MB/s network bandwidth
 
-## Supported NVIDIA GPUs
+<Callout emoji="💡">
+  For MacOS users, any M-series chip with the above requirements will work.
+</Callout>
 
-> Note: Some cards may have less than 8GB VRAM, which are not supported at this time.
 
-```
------ Gaming GPUs -----
-GeForce RTX 40xx Series
-RTX 4090
-RTX 4080
-RTX 4070 Ti
-RTX 4060 Ti
-GeForce RTX 30xx Series
-RTX 3090 Ti
-RTX 3090
-RTX 3080 Ti
-RTX 3080
-RTX 3070 Ti
-RTX 3070
-RTX 3060 Ti
-RTX 3060
-GeForce GTX/RTX Series
-TITAN RTX
-RTX 2080 Super
-RTX 2080 Ti
-RTX 2080
-RTX 2070
-RTX 2060
-GeForce GTX Series
-GTX 1080 Ti
-GTX 1080
-GTX 1070 Ti
-GTX 1070
-GTX 1060
-GTX 1050
-GTX TITAN X
-GTX 980 Ti
-GTX 980
-GTX 970
-GTX 960
-GTX 950
-GTX 750 Ti
-GTX 750
------ NVIDIA Professional GPUs -----
-RTX Series
-RTX 6000
-RTX 5000
-RTX 4000
-RTX 3000
-RTX 8000
-A Series
-A100
-A30
-A40
-A6000
-A5000
-A4000
-A3000
-A2000
-A10
-A16
-A2
-T Series
-T4
-T2000
-T1200
-T1000
-T600
-T500
-Tesla GPUs
-P40
-P4
-P100
-M60
-M40
-TITAN Series
-TITAN V
-TITAN Xp
-TITAN X
-Quadro Series
-Quadro GV100
-Quadro GP100
-Quadro P6000
-Quadro P5200
-Quadro P4200
-Quadro P3200
-Quadro P5000
-Quadro P4000
-Quadro P3000
-Quadro P2200
-Quadro P2000
-Quadro P1000
-Quadro P620
-Quadro P600
-Quadro P500
-Quadro P520
-Quadro M6000 24GB
-Quadro M6000
-Quadro M5000
-Quadro M5500M
-Quadro M4000
-Quadro M2200
-Quadro M2000
-Quadro M620
-Quadro K2200
-Quadro K1200
-Quadro K620
-Quadro M1200
-Quadro M520
-Quadro M5000M
-Quadro M4000M
-Quadro M3000M
-Quadro M2000M
-Quadro M1000M
-Quadro K620M
-Quadro M600M
-Quadro M500M
-```
+## Supported GPUs
 
-## Supported AMD GPUs
 
-```
----- AMD Radeon RX ----
-7900 XTX
-7900 XT
-7900 GRE
-7800 XT
-7700 XT
-7600 XT
-7600
-6950 XT
-6900 XTX
-6900XT
-6800 XT
-6800
-Vega 64
-Vega 56
----- AMD Radeon PRO ----
-W7900
-W7800
-W7700
-W7600
-W7500
-W6900X
-W6800X Duo
-W6800X
-W6800
-V620
-V420
-V340
-V320
-Vega II Duo
-Vega II
-VII
-SSG
----- AMD Instinct ----
-MI300X
-MI300A
-MI300
-MI250X
-MI250
-MI210
-MI200
-MI100
-MI60
-MI50
-```
+| GPU Model | VRAM | Manufacturer |
+|-----------|------|--------------|
+| RTX 4090 | 24GB GDDR6X | NVIDIA |
+| RTX 4080 | 16GB GDDR6X | NVIDIA |
+| RTX 4000 | 16GB GDDR6 | NVIDIA |
+| RTX 3090 Ti | 24GB GDDR6X | NVIDIA |
+| RTX 3090 | 24GB GDDR6X | NVIDIA |
+| A10 | 24GB GDDR6 | NVIDIA |
+| A100 | 40GB/80GB HBM2e | NVIDIA |
+| A30 | 24GB HBM2 | NVIDIA |
+| A40 | 48GB GDDR6 | NVIDIA |
+| A4000 | 16GB GDDR6 | NVIDIA |
+| A5000 | 24GB GDDR6 | NVIDIA |
+| A6000 | 48GB GDDR6 | NVIDIA |
+| M60 | 16GB GDDR5 | NVIDIA |
+| MI100 | 32GB HBM2 | AMD |
+| MI200 | 64GB HBM2e | AMD |
+| MI210 | 64GB HBM2e | AMD |
+| MI250 | 128GB HBM2e | AMD |
+| MI250X | 128GB HBM2e | AMD |
+| MI300 | 128GB HBM3 | AMD |
+| MI300A | 128GB HBM3 | AMD |
+| MI300X | 192GB HBM3 | AMD |
+| MI60 | 32GB HBM2 | AMD |
+| P100 | 16GB HBM2 | NVIDIA |
+| P40 | 24GB GDDR5X | NVIDIA |
+| Quadro GP100 | 16GB HBM2 | NVIDIA |
+| Quadro GV100 | 32GB HBM2 | NVIDIA |
+| Quadro M6000 24GB | 24GB GDDR5 | NVIDIA |
+| Quadro P5000 | 16GB GDDR5X | NVIDIA |
+| Quadro P5200 | 16GB GDDR5 | NVIDIA |
+| Quadro P6000 | 24GB GDDR5X | NVIDIA |
+| RTX 5000 | 24GB GDDR6 | NVIDIA |
+| RTX 6000 | 48GB GDDR6 | NVIDIA |
+| RTX 8000 | 48GB GDDR6 | NVIDIA |
+| T4 | 16GB GDDR6 | NVIDIA |
+| TITAN RTX | 24GB GDDR6 | NVIDIA |
+| SSG | 16GB HBM2 | AMD |
+| V340 | 32GB HBM2 | AMD |
+| Vega II | 32GB HBM2 | AMD |
+| Vega II Duo | 2x32GB HBM2 | AMD |
+| VII | 16GB HBM2 | AMD |
+| W6800 | 32GB GDDR6 | AMD |
+| W6800X | 32GB GDDR6 | AMD |
+| W6800X Duo | 2x32GB GDDR6 | AMD |
+| W6900X | 32GB GDDR6 | AMD |
+| W7700 | 16GB GDDR6 | AMD |
+| W7800 | 32GB GDDR6 | AMD |
+| W7900 | 48GB GDDR6 | AMD |
+| 6800 | 16GB GDDR6 | AMD |
+| 6800 XT | 16GB GDDR6 | AMD |
+| 6900 XT | 16GB GDDR6 | AMD |
+| 6900 XTX | 16GB GDDR6 | AMD |
+| 6950 XT | 16GB GDDR6 | AMD |
+| 7600 XT | 16GB GDDR6 | AMD |
+| 7800 XT | 16GB GDDR6 | AMD |
+| 7900 GRE | 16GB GDDR6 | AMD |
+| 7900 XT | 20GB GDDR6 | AMD |
+| 7900 XTX | 24GB GDDR6 | AMD |
