@@ -1,0 +1,60 @@
+import { Callout, Steps, Step, Image } from "nextra-theme-docs";
+
+# Running Kuzco on Vast.ai 
+
+[Vast.ai](https://vast.ai) is a popular GPU rental marketplace. This guide will walk you through the process of renting a GPU on Vast.ai and running Kuzco.
+
+<Callout emoji="💡">
+View the official Kuzco Worker Vast template [here](https://cloud.vast.ai/?ref_id=181891&template_id=8956ecbe2c6f58d879ae9dc38f4c8e80).
+</Callout>
+
+### Kuzco setup
+
+1. Create a Kuzco account [here](https://kuzco.ai/signup)
+2. Once you have created your account and confirmed your email, you will be able to login to the Kuzco dashboard.
+3. On dashboard, you will see the screen below. Click the "Create Worker" button.
+
+![Create Worker](/images/vast/create-worker.png)
+
+Now that your worker is created,you will see different options to launch your worker. Click on the "Vast" tab. You will see the screen below:
+
+![Worker Created](/images/vast/launch-worker.png)
+
+We need to configure your Vast account with the environment variables above. 
+
+### Vast setup
+
+1. Sign up for a Vast account [here](https://cloud.vast.ai)
+2. Once signed up, add a payment method.
+
+#### Configure Environment Variables
+
+We're going to add two environment variables to your Vast account:
+
+1. `WORKER_ID`: This is the ID of your worker. 
+2. `WORKER_CODE`: This is the API key for your worker.
+
+In the left sidebar, click on the "Account" tab. On the right side of the screen, you will see the "Environment Variables" section. 
+
+![Environment Variables](/images/vast/vast-env-vars.png)
+
+Click on the "Add Variable" button. The dialog will open:
+
+![Add Variable](/images/vast/add-variable.png)
+
+In the Key field, enter `WORKER_ID`. Back in the Kuzco dashboard, you will see the value of your worker ID as `WORKER_ID=XXXXXXXXXX`. The `XXXXXXXXXX` is the value you will copy and paste into the Value field on Vast.
+
+![Worker ID](/images/vast/worker-id.png)
+
+Click the "Add" button. Repeat the process for the `WORKER_CODE` variable.
+
+![Worker Code](/images/vast/worker-code.png)
+
+Click the "Add" button. You will see the environment variables added to your Vast account.
+
+![Environment Variables Added](/images/vast/vast-env-vars-complete.png)
+
+Your Vast account is now configured to launch workers!
+
+### Launching your worker
+

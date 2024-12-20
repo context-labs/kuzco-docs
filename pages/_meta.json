@@ -4,7 +4,9 @@
   "wsl-setup": "WSL Setup",
   "docker": "Docker Setup",
   "kuzco-cli": "Kuzco CLI",
+  "vast": "Using Vast.ai",
   "hardware": "Hardware",
   "support": "Support",
   "metadata-api": "Metadata API"
+  
 }
