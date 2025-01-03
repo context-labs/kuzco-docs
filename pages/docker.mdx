@@ -40,7 +40,7 @@ For example:
 
 Make sure to replace `<workerid>` and `<code>` with your actual worker id and code.
 
-#### Running Multiples Instances
+#### Running Multiple Instances
 
 If you have multiple GPUs, you can run multiple instances of your worker by starting a container for each GPU and passing the `--gpus` flag to the container.
 
@@ -66,4 +66,4 @@ docker stop $(docker ps -q)
 
 ### Deprecation Notice
 
-As the start of Epoch 2 (Dec 2024), we have deprecated the  `kuzcoxyz/worker` image. Please use the `kuzcoxyz/amd64-ollama-nvidia-worker` image instead.
+At the start of Epoch 2 (Dec 2024), we have deprecated the  `kuzcoxyz/worker` image. Please use the `kuzcoxyz/amd64-ollama-nvidia-worker` image instead.
