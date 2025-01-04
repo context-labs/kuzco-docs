@@ -4,9 +4,8 @@
   "wsl-setup": "WSL Setup",
   "docker": "Docker Setup",
   "kuzco-cli": "Kuzco CLI",
-  "vast": "Using Vast.ai",
+  "discord-roles": "Discord Roles",
   "hardware": "Hardware",
   "support": "Support",
   "metadata-api": "Metadata API"
-  
 }
