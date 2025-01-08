@@ -4,6 +4,7 @@
   "wsl-setup": "WSL Setup",
   "docker": "Docker Setup",
   "kuzco-cli": "Kuzco CLI",
+  "vast": "Vast Setup",
   "discord-roles": "Discord Roles",
   "hardware": "Hardware",
   "support": "Support",

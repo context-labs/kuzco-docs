@@ -1,0 +1,134 @@
+import { Callout, Steps, Step, Image } from "nextra-theme-docs";
+
+# Running Kuzco on Vast.ai 
+
+[Vast.ai](https://vast.ai) is a popular GPU rental marketplace. This guide will walk you through the process of renting a GPU on Vast.ai and running Kuzco.
+
+<Callout emoji="💡">
+View the official Kuzco Worker Vast template [here](https://cloud.vast.ai/?ref_id=181891&template_id=8956ecbe2c6f58d879ae9dc38f4c8e80).
+</Callout>
+
+### Kuzco Setup
+
+1. Create a Kuzco account [here](https://kuzco.ai/signup)
+2. Once you have created your account and confirmed your email, you will be able to log in to the Kuzco dashboard.
+3. On the dashboard, you will see the screen below. Click the "Create Worker" button.
+
+![Create Worker](/images/vast/create-worker.png)
+
+Now that your worker is created, you will see different options to launch your worker. Click on the "Vast" tab. You will see the screen below:
+
+![Worker Created](/images/vast/launch-worker.png)
+
+We need to configure your Vast account with the environment variables above. Click the "Copy" icon to the right of the `WORKER_ID` and `WORKER_CODE` variables to copy them to your clipboard.
+
+### Vast Setup
+
+1. Sign up for a Vast account [here](https://cloud.vast.ai)
+2. Once signed up, add a payment method. 
+
+<Callout emoji="⚠️">
+Note: You must add a payment method to your Vast account before you can launch a worker.
+</Callout>
+
+#### Configure Environment Variables
+
+We're going to add two environment variables to your Vast account:
+
+1. `WORKER_ID`: This is the ID of your worker. 
+2. `WORKER_CODE`: This is the API key for your worker.
+
+In the left sidebar, click on the "Account" tab. In the list of configuration options, click on "Environment Variables" to expand the section.
+
+![Environment Variables](/images/vast/env-vars.png)
+
+Click on the "+ Batch Paste" button. In the input field, paste the `WORKER_ID` and `WORKER_CODE` variables from your clipboard and click the "Save" button.
+
+![Add Variable](/images/vast/post-batch-paste.png)
+
+You should see your environment variables added to the list like in the screenshot below. 
+
+Click "Save Edits" at the bottom of the page.
+
+![Saved](/images/vast/batch-paste-saved.png)
+
+<Callout emoji="⚠️">
+Make sure to click "Save Edits" at the bottom of the page or your changes will not be saved.
+</Callout>
+
+Your Vast account is now configured!
+
+### Launching Your Worker
+
+Now that your environment variables are set, you can launch your worker using the official Kuzco Worker Vast template.
+
+View the official template [here](https://cloud.vast.ai/?ref_id=181891&template_id=8956ecbe2c6f58d879ae9dc38f4c8e80).
+
+Once you click on the link above, you should see a screen that looks like this:
+
+![Select GPU](/images/vast/select-gpu.png)
+
+A few things to note:
+1. On the upper left-hand side of the screen, you should see the text "Kuzco Worker" below the NVIDIA logo.
+2. Below that section, you should see "Disk Space To Allocate". Make sure this is at least 30GB.
+
+### Selecting a GPU
+
+The main content on this page is a list of GPUs that are available to rent. Below are some options that we recommend, but any device on our list of [supported hardware](/hardware) should work.
+
+| GPU Model | VRAM | Manufacturer |
+|-----------|------|--------------|
+| RTX 4090 | 24GB GDDR6X | NVIDIA |
+| RTX 4080 | 16GB GDDR6X | NVIDIA |
+| RTX 4000 | 16GB GDDR6 | NVIDIA |
+| RTX 3090 Ti | 24GB GDDR6X | NVIDIA |
+| RTX 3090 | 24GB GDDR6X | NVIDIA |
+
+
+In this example, we are going to rent an NVIDIA RTX 4090. 
+
+![Select GPU](/images/vast/rent-4090.png)
+
+To rent a device, click on the "Rent" button in the bottom right-hand corner. This will start your worker using the Kuzco Worker template and the environment variables you set earlier.
+
+### Monitoring Your Worker
+
+Once your worker is launched, you can monitor its status by clicking on the "Instances" tab in the left sidebar. You should see the rented GPU listed in the list of instances. It will be in some sort of "loading" state.
+
+![Instances](/images/vast/created-4090.png)
+
+Once your instance enters the "Running" state, you can click on the "Logs" icon in the bottom right-hand corner to view the logs for your worker.
+
+![Logs](/images/vast/running-4090.png)
+
+Here you will see your worker downloading the AI models necessary to run Kuzco. This process can take up to 10 minutes.
+
+![Logs](/images/vast/running-logs.png)
+
+Back in the Kuzco dashboard, you should see your worker enter the "Initializing" state: 
+
+![Initialized](/images/vast/worker-initializing.png)
+
+After a few minutes, your worker will enter the "Running" state:
+
+![Running](/images/vast/worker-running.png)
+
+**Congratulations!** Your worker is now running. Click "Next Steps" to continue to the dashboard to see your worker in action.
+
+## Common Questions
+
+**Q: When will I start earning points?**  
+A: You will start earning points once your worker is running and starts processing jobs. Depending on current network throughput, this can take anywhere from 10 minutes to 1 hour after your worker is launched.
+
+**Q: My worker failed to start, what should I do?**  
+A: Sometimes Vast rentals fail to start. If this happens, please try to start your worker again by renting another GPU. If the problem persists, please contact our support team.
+
+**Q: How do I stop my worker?**  
+A: You can stop your worker by deleting your rented instance in Vast. This will not affect your Kuzco account -- any points you have earned will still be visible in your Kuzco dashboard.
+
+---
+
+## Need Additional Help?
+
+- **Visit the Kuzco Support Channel**: Join our [Discord server](https://discord.gg/kuzco) and open a ticket.  
+- **Check Our FAQ**: We often update our documentation with answers to common questions.
