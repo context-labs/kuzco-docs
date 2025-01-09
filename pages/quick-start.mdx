@@ -52,16 +52,19 @@ You can run Kuzco in a Docker container on Windows. Make sure you have:
 - NVIDIA GPU from our [supported hardware list](/hardware)
 
 Follow these steps:
-1. Register at [kuzco.xyz/register](https://kuzco.xyz/register)
-2. Verify your email
-3. Go to "Workers" tab in dashboard
-4. Click "Create Worker" and select "Docker"
-5. Copy the Docker command from the Kuzco Console and run it in your Windows terminal to start the container. The command will look similar to this:
-
-```bash
-docker run --rm --runtime=nvidia --gpus all -e CACHE_DIRECTORY=/root/models -v ~/.kuzco/models:/root/models kuzcoxyz/amd64-ollama-nvidia-worker --worker <unique-worker-id> --code <your-unique-code>
+1. Download and install [Docker Desktop for Windows](https://www.docker.com/products/docker-desktop)
+2. Download and install the [NVIDIA Driver](https://www.nvidia.com/download/index.aspx) for your GPU
+3. Install [NVIDIA Container Toolkit for Windows](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)
+4. Register a Kuzco account at [https://kuzco.xyz/register](https://kuzco.xyz/register)
+5. Verify your email and Discord
+6. On the dashboard, navigate to the "Workers" tab on the left
+7. Click "Create Worker" in the top right-hand corner
+8. Enter a name for your worker, make sure "Docker" is selected, and click "Create Worker"
+9. On the Worker Details page, click "Launch Worker" in the top right-hand corner
+10. Open PowerShell and run the Docker container with your worker ID and code:
+```powershell
+docker run --rm --runtime=nvidia --gpus all -e CACHE_DIRECTORY=/root/models -v ${HOME}/.kuzco/models:/root/models kuzcoxyz/amd64-ollama-nvidia-worker --worker <workerid> --code <code>
 ```
-
 Note: Each worker has its unique ID and code. Always use the command provided in your Kuzco Console.
 
 Your worker will show as "Initializing" in the dashboard. This process usually takes 1-2 minutes.
