@@ -52,7 +52,7 @@ const navigation = {
       href: "https://vercel.com/oss?utm_source=turborepo.org&utm_medium=referral&utm_campaign=footer-ossLink",
     },
     { name: "GitHub", href: "https://github.com/vercel" },
-    { name: "Twitter", href: "https://twitter.com/vercel" },
+    { name: "Twitter", href: "https://x.com/vercel" },
   ],
   legal: [
     { name: "Privacy Policy", href: "/privacy" },
