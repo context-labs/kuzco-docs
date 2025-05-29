@@ -1,0 +1,97 @@
+---
+title: 'Inference CLI'
+description: 'Install and manage Inference.net nodes using the CLI on Linux and macOS'
+---
+
+## Getting Started
+
+To install and start using Inference.net CLI on Linux or macOS, run the following command:
+
+```sh
+sh -c "$(curl -sSL https://testnet.inference.net/setup-kuzco.sh)"
+```
+
+## Versioning and Updating
+
+Inference.net CLI provides several methods of updating including automatic updating by running Inference.net CLI as a systemd service. See "Managing Inference.net with systemd".
+
+### Check Version
+
+```sh
+kuzco version
+```
+
+### Upgrade the Inference.net CLI to the latest version
+
+```sh
+kuzco upgrade
+```
+
+## Managing Inference.net with systemd
+
+Inference.net CLI provides several commands to manage the node running in systemd.
+
+### Starting a Worker
+
+To start your node and install it into systemd, use the following command with the `--background` flag, which will install the `kuzco.service` in your systemd:
+
+```sh
+sudo kuzco worker start --background --worker <worker> --code <code>
+```
+There is an optional `--follow` flag also which will output the node logs if run with `--background`
+
+### Checking Worker Status
+
+To check the status of the Inference.net node in systemd, run:
+
+```sh
+kuzco worker status
+```
+
+### Stopping a Worker
+
+To stop the running Inference.net node in systemd, use:
+
+```sh
+sudo kuzco worker stop
+```
+
+### Restarting a Worker
+
+To restart the running Inference.net node in systemd, execute:
+
+```sh
+sudo kuzco worker restart
+```
+
+### Viewing Worker Logs
+
+To view the current running logs of Inference.net in systemd, you can use:
+
+```sh
+sudo kuzco worker logs
+```
+
+## Inference.net Node Command Usage
+
+For a quick reference on how to manage Inference.net nodes, see the command usage below:
+
+```plaintext
+kuzco worker help
+Usage: kuzco worker [options] [command]
+
+Manage Inference.net nodes
+
+Options:
+  -h, --help       display help for command
+
+Commands:
+  create           Create and register a new node with Inference.net.
+  start [options]  Start a node
+  stop             Stop the Inference.net node systemd service
+  restart          Restart the Inference.net node systemd service
+  status           Check the status of the Inference.net node
+  logs             Get the logs of the Inference.net node
+  clean [options]  kuzco node clean will remove the current node and restart the node service
+  help [command]   display help for command
+```

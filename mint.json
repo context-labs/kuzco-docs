@@ -1,0 +1,87 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "Inference.net Operator Documentation",
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#53B1FD",
+    "light": "#268CE0",
+    "dark": "#53B1FD",
+    "background": {
+      "dark": "#0F0F0F",
+      "light": "#F8F2EC"
+    },
+    "anchors": {
+      "from": "#53B1FD",
+      "to": "#53B1FD"
+    }
+  },
+  "topbar": {
+    "style": "default"
+  },
+  "codeBlock": {
+    "mode": "auto"
+  },
+  "rounded": "sharp",
+  "topbarLinks": [
+    {
+      "name": "Support",
+      "url": "https://discord.gg/kuzco"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Dashboard",
+    "url": "https://testnet.inference.net/dashboard"
+  },
+  "anchors": [
+    {
+      "name": "Dashboard",
+      "icon": "grid",
+      "url": "https://testnet.inference.net/dashboard"
+    },
+    {
+      "name": "Discord",
+      "icon": "discord",
+      "url": "https://discord.gg/kuzco"
+    },
+    {
+      "name": "Register",
+      "icon": "user-plus",
+      "url": "https://testnet.inference.net/register"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        "getting-started/introduction",
+        "getting-started/quickstart",
+        "getting-started/hardware"
+      ]
+    },
+    {
+      "group": "Installation",
+      "pages": [
+        "installation/inference-cli",
+        "installation/docker",
+        "installation/wsl-setup",
+        "installation/vast"
+      ]
+    },
+    {
+      "group": "Community & Support",
+      "pages": [
+        "community/discord-roles",
+        "community/support",
+        "community/faq"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "x": "https://x.com/inference_net",
+    "github": "https://github.com/context-labs"
+  }
+}

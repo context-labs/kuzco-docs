@@ -1,3 +1,9 @@
-.next
-node_modules
-.env
+code_example_testing/
+**/*.mdx.new
+.DS_Store
+test/code/
+test/code_blocks/
+**/.env
+**/node_modules/
+package.json
+package-lock.json
