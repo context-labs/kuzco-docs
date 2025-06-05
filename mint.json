@@ -72,12 +72,16 @@
       ]
     },
     {
-      "group": "Community & Support",
+      "group": "Testnet Epoch 3",
       "pages": [
-        "community/discord-roles",
-        "community/support",
-        "community/faq"
+        "testnet-epoch-3/introduction",
+        "testnet-epoch-3/airdrop",
+        "testnet-epoch-3/staking"
       ]
+    },
+    {
+      "group": "Community & Support",
+      "pages": ["community/discord-roles", "community/support", "community/faq"]
     }
   ],
   "footerSocials": {
