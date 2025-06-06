@@ -3,100 +3,56 @@ title: Quick Start
 description: Get started running an Inference.net node on your operating system
 ---
 
-<Note>
+<Warning>
 Before proceeding, make sure you have compatible [hardware](/getting-started/hardware).
+</Warning>
+
+<Note>
+For advanced users, we recommend using **Docker**. Check out our [Docker guide](/advanced/docker) to get started.
 </Note>
 
 ## macOS
+You can join Inference Devnet on macOS by running the Inference Devnet Desktop App or by using the Inference Devnet CLI.
 
-### Desktop App
+#### Desktop App
 
-The easiest way to get started with Inference.net on macOS is to download and install the Inference.net macOS app from the [official website](https://testnet.inference.net/download).
+The easiest way to join Inference Devnet on macOS is to download and install the Inference Devnet macOS app from the [official website](https://devnet.inference.net/download).
 
-Launch the app and follow the on-screen instructions to set up your account and launch a worker.
+Launch the app and follow the on-screen instructions to set up your account and launch a node.
 
-### CLI
+#### CLI
 
 Inference.net can also be run as a CLI tool on macOS. To install Inference.net CLI, run following command in your terminal:
 
 ```bash
-curl -fsSL https://testnet.inference.net/install.sh | sh
+curl -fsSL https://devnet.inference.net/install.sh | sh
 ```
 
-After installation, [register your account](https://testnet.inference.net/register). Make sure to verify your email to complete the registration process.
-
-Next, run the following command to initialize your Inference.net node:
-
-```bash
-kuzco init
-```
-
-This command will guide you through creating and running a Inference.net node.
+After installation, [register your account](https://devnet.inference.net/register) and follow the steps in the dashboard to start your node.
 
 ## Windows
-Inference.net supports running on Windows in a variety of configurations. You can run the node software as a desktop app, in a WSL container, or in a Docker container.
+You can join Inference Devnet on Windows by running the Inference Devnet Desktop App.
 
-### Desktop App
+#### Desktop App
 
-The easiest way to get started with Inference.net on Windows is to download and install the Inference.net Windows app from the [official website](https://testnet.inference.net/download).
+The easiest way to join Inference Devnet on Windows is to download and install the Inference Devnet Windows app from the [official website](https://devnet.inference.net/download).
 
-Launch the app and follow the on-screen instructions to set up your account and launch a worker.
+Launch the app and follow the on-screen instructions to set up your account and launch a node.
 
-### WSL
+{/* #### WSL
 
-Inference.net can also be run on Windows Subsystem for Linux (WSL). Check out our [WSL guide](/installation/wsl-setup) to get started.
-
-### Docker
-
-You can run Inference.net in a Docker container on Windows. Make sure you have:
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed
-- NVIDIA GPU from our [supported hardware list](/getting-started/hardware)
-
-<Steps>
-  <Step title="Register Account">
-    Register at [kuzco.xyz/register](https://testnet.inference.net/register)
-  </Step>
-  <Step title="Verify Email">
-    Verify your email to complete the registration process
-  </Step>
-  <Step title="Create Worker">
-    Go to "Workers" tab in dashboard and click "Create Worker"
-  </Step>
-  <Step title="Select Docker">
-    Select "Docker" as your deployment method
-  </Step>
-  <Step title="Run Container">
-    Copy the Docker command from the Inference.net Console and run it in your Windows terminal to start the container. The command will look similar to this:
-
-    ```bash
-    docker run --rm --runtime=nvidia --gpus all -e CACHE_DIRECTORY=/root/models -v ~/.kuzco/models:/root/models kuzcoxyz/amd64-ollama-nvidia-worker --worker <unique-worker-id> --code <your-unique-code>
-    ```
-  </Step>
-</Steps>
-
-<Note>
-Each worker has its unique ID and code. Always use the command provided in your Inference.net Console.
-</Note>
-
-Your worker will show as "Initializing" in the dashboard. This process usually takes 1-2 minutes.
+You can join Inference Devnet on Windows by using WSL. Check out our [WSL guide](/advanced/wsl-setup) to get started. */}
 
 ## Linux
 
-Run the following command to install Inference.net on Linux:
+You can join Inference Devnet on Linux by running the Inference Devnet CLI.
 
 ```bash
-curl -fsSL https://testnet.inference.net/install.sh | sh
+curl -fsSL https://devnet.inference.net/install.sh | sh
 ```
 
-After installation, [register your account](https://testnet.inference.net/register). Make sure to verify your email to complete the registration process.
+After installation, [register your account](https://devnet.inference.net/register) and follow the steps in the dashboard to start your node.
 
-Next, run the following command to initialize your Inference.net node:
-
-```bash
-kuzco init
-```
-
-This command will guide you through creating and running a Inference.net node.
 
 ## Next Steps
 

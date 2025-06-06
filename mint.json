@@ -34,13 +34,13 @@
   ],
   "topbarCtaButton": {
     "name": "Dashboard",
-    "url": "https://testnet.inference.net/dashboard"
+    "url": "https://devnet.inference.net/dashboard"
   },
   "anchors": [
     {
       "name": "Dashboard",
       "icon": "grid",
-      "url": "https://testnet.inference.net/dashboard"
+      "url": "https://devnet.inference.net/dashboard"
     },
     {
       "name": "Discord",
@@ -50,7 +50,7 @@
     {
       "name": "Register",
       "icon": "user-plus",
-      "url": "https://testnet.inference.net/register"
+      "url": "https://devnet.inference.net/register"
     }
   ],
   "navigation": [
@@ -63,20 +63,17 @@
       ]
     },
     {
-      "group": "Installation",
+      "group": "Advanced",
       "pages": [
-        "installation/inference-cli",
-        "installation/docker",
-        "installation/wsl-setup",
-        "installation/vast"
+        "advanced/docker"
       ]
     },
     {
-      "group": "Testnet Epoch 3",
+      "group": "Devnet Epoch 3",
       "pages": [
-        "testnet-epoch-3/introduction",
-        "testnet-epoch-3/airdrop",
-        "testnet-epoch-3/staking"
+        "devnet-epoch-3/introduction",
+        "devnet-epoch-3/airdrop",
+        "devnet-epoch-3/staking"
       ]
     },
     {

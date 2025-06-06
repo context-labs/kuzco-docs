@@ -45,7 +45,7 @@ We welcome contributions to improve the documentation! Please feel free to submi
 
 ## 📞 Support
 
-For support, join our [Discord community](https://discord.gg/kuzco) or visit our [support page](https://docs.kuzco.xyz/community/support).
+For support, join our [Discord community](https://discord.gg/kuzco) or visit our [support page](https://docs.devnet.inference.net/community/support).
 
 ## Workflow
 

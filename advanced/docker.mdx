@@ -1,0 +1,74 @@
+---
+title: Docker Installation
+description: Deploy Inference.net nodes using Docker on Windows and Linux
+---
+
+# Docker Installation
+
+This document provides detailed instructions to deploy Inference.net nodes using Docker. If you are unfamiliar with Docker, please refer to the [Docker documentation](https://docs.docker.com/get-started/). Join us on Discord if you need further assistance.
+
+### Requirements
+ - Windows or Linux operating system
+ - Any NVIDIA GPU found in our list of [supported hardware](/getting-started/hardware)
+ - Docker Desktop (Windows) or Docker Engine (Linux)
+
+#### Linux Installation
+1. Download and install [Docker Engine for Linux](https://docs.docker.com/engine/install/ubuntu/)
+2. Install NVIDIA Driver using terminal:
+```bash
+sudo apt update
+sudo apt install ubuntu-drivers-common
+sudo ubuntu-drivers autoinstall
+```
+
+Or manually select and install a specific driver version:
+```bash
+sudo apt update
+sudo apt install ubuntu-drivers-common
+ubuntu-drivers devices
+sudo apt install nvidia-driver-XXX  # Replace XXX with the recommended version number
+```
+   You can check the recommended driver version for your GPU at [NVIDIA's driver download page](https://www.nvidia.com/download/index.aspx)
+
+3. Install [NVIDIA Container Toolkit for Linux](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)
+4. Register a Inference.net account at [https://devnet.inference.net/register](https://devnet.inference.net/register)
+5. Verify your email after registration
+6. On the dashboard, navigate to the "Workers" tab on the left
+7. Click "Create Worker" in the top right-hand corner
+8. Enter a name for your worker, make sure "Docker" is selected, and click "Create Worker"
+9. On the Worker Details page, click "Launch Worker" in the top right-hand corner
+10. Open Terminal and run the Docker container with yourcode:
+```bash
+docker run \
+  --pull=always \
+  --restart=always \
+  --runtime=nvidia \
+  --gpus all \
+  -v ~/.inference:/root/.inference \
+  inferencedevnet/amd64-ollama-nvidia-node:latest \
+  --code <code>
+```
+
+#### Windows Installation
+1. Download and install [Docker Desktop for Windows](https://www.docker.com/products/docker-desktop)
+2. Download and install the [NVIDIA Driver](https://www.nvidia.com/download/index.aspx) for your GPU
+3. Install [NVIDIA Container Toolkit for Windows](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)
+4. Register a Kuzco account at [https://devnet.inference.net/register](https://devnet.inference.net/register)
+5. Verify your email and connect your Discord account in Settings
+6. On the dashboard, navigate to the "Workers" tab on the left
+7. Click "Create Worker" in the top right-hand corner
+8. Enter a name for your worker, make sure "Docker" is selected, and click "Create Worker"
+9. On the Worker Details page, click "Launch Worker" in the top right-hand corner
+10. Open PowerShell or Windows Terminal and run the Docker container with your code:
+```bash
+docker run \
+  --pull=always \
+  --restart=always \
+  --runtime=nvidia \
+  --gpus all \
+  -v ~/.inference:/root/.inference \
+  inferencedevnet/amd64-ollama-nvidia-node:latest \
+  --code <code>
+```
+
+Once your node is started, you will see it enter the "Initializing" state on the dashboard. This means that your node is preparing to accept tasks. Depending on the speed of your GPU, this process may take up to 10 minutes, but generally only takes a minute or two.
