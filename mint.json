@@ -55,6 +55,12 @@
   ],
   "navigation": [
     {
+      "group": "Epoch 3",
+      "pages": [
+        "devnet-epoch-3/overview"
+      ]
+    },
+    {
       "group": "Getting Started",
       "pages": [
         "getting-started/introduction",
@@ -68,14 +74,7 @@
         "advanced/docker"
       ]
     },
-    {
-      "group": "Devnet Epoch 3",
-      "pages": [
-        "devnet-epoch-3/introduction",
-        "devnet-epoch-3/airdrop",
-        "devnet-epoch-3/staking"
-      ]
-    },
+    
     {
       "group": "Community & Support",
       "pages": ["community/discord-roles", "community/support", "community/faq"]

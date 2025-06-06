@@ -1,0 +1,182 @@
+---
+title: "Overview"
+description: "Inference.net Epoch 3: Solana protocol, stake-weighted routing, and more"
+---
+
+On June 6th, 2025, Inference.net will launch Devnet Epoch 3, introducing significant protocol changes designed to improve network scalability, operator experience, and economic alignment. This post details the technical improvements, new staking mechanisms, and operational changes that will define this next phase of Inference.net.
+
+## Preparing for Epoch 3
+1. Verify your hardware meets the  [minimum requirements](/getting-started/hardware)
+2. Review the new  [quickstart](/getting-started/quickstart) documentation to deploy your Epoch 3 node.
+3. Link your Solana wallet on [the dashboard](https://devnet.inference.net/dashboard) to your Inference.net account before June 13th
+4. Join our [Discord](https://discord.gg/kuzco) to montior Epoch 3 rollout and get support.
+
+
+
+## Epoch 3 Feature Timeline
+Epoch 3 will be rolled out in phases, with each phase bringing new features and improvements to the network. Please see the timeline below for more details.
+
+| Date | Features Going Live | Description |
+|------|-------------------|-------------|
+| **June 6, 2025** | **Network Upgrade** | • Auto-update system activation for all node types<br/>• Enhanced GPU detection and validation<br/>• Unified inference engine<br/>• New simplified node deployment instructions<br/>• Unknown GPUs blocked from joining network |
+| **June 13, 2025** | **Economic Layer** | • $INT-DEV token airdrop to eligible operators<br/>• Staking protocol goes live<br/>• Stake-weighted job routing begins<br/>• Operator pool creation enabled<br/>• Delegation functionality activated|
+| **June 20, 2025** | **Extended Features** | • Bonus point system for community contributions<br/>• Additional point-earning opportunities<br/>• Enhanced monitoring and analytics<br/>• Reputation system testing begins |
+| **Late June 2025** | **Advanced Features** | • Full reputation scoring activation<br/>• Performance-based routing adjustments<br/>• Slashing mechanism testing (testnet only)<br/>• Token faucet for additional $INT-DEV |
+
+
+## Core Protocol Improvements
+
+### Automatic Node Updates
+
+Based on overwhelming operator feedback from previous epochs, we've implemented a comprehensive auto-update system for the Inference.net node software. This system works across all deployment types - CLI, Docker, and Desktop applications - and handles minor version updates without operator intervention.
+
+The auto-update mechanism performs health checks before and after updates, ensuring nodes remain operational throughout the process. In the event of an update failure, nodes automatically rollback to the previous stable version and report the issue to our monitoring systems. This significantly reduces the operational burden on GPU operators who previously needed to manually update nodes during each release cycle.
+
+### Unified Inference Engine Management
+
+Previous versions of Inference.net required operators to select and deploy specific Docker containers based on their intended inference engine (SGLang or vLLM). This created complexity for operators who needed to understand the technical differences between engines and make deployment decisions based on their hardware capabilities.
+
+In Epoch 3, we've consolidated these into a single container that automatically detects hardware specifications and selects the optimal inference engine. The selection algorithm considers:
+- GPU architecture and compute capability
+- Available VRAM
+- CPU specifications
+- System memory
+
+This abstraction layer reduces setup complexity while ensuring optimal performance for each hardware configuration.
+
+### Enhanced GPU Detection and Validation
+
+Starting June 6th, the network will enforce strict GPU detection requirements. Only GPUs that can be properly identified by our detection system will be permitted to join the network. This change from Epoch 2's permissive approach ensures:
+- Accurate job routing based on hardware capabilities
+- Proper performance benchmarking
+- Prevention of misrepresented hardware specifications
+
+Common detection failures typically stem from outdated drivers or incorrect permissions. Operators experiencing detection issues should ensure they're running the latest GPU drivers and that their Inference.net node has appropriate system permissions. If you're having trouble identifying your GPU, please open a ticket on our [Discord](https://discord.gg/kuzco).
+
+## Stake-Weighted Job Routing
+
+The cornerstone of Epoch 3 is our new stake-weighted routing system, which fundamentally changes how inference jobs are distributed across the network. This system creates economic incentives for reliable operation while ensuring efficient resource utilization.
+
+### Priority Score Calculation
+
+Each instance operating on the network receives a priority score that determines its probability of receiving inference jobs. The priority score is calculated as:
+
+```
+Priority Score = 1 + k × (Device VRAM / Total Operator VRAM × Total INT Stake × Reputation Weight)
+```
+
+Where:
+- **Device VRAM / Total Operator VRAM**: Normalizes stake across operators with different numbers of machines
+- **Total INT Stake**: The sum of operator-owned and delegated tokens in their pool
+- **Reputation Weight**: A multiplier between 0 and 1 based on performance metrics
+- **k**: A network parameter that adjusts based on utilization
+
+### Understanding the k Parameter
+
+The parameter `k` dynamically adjusts to optimize network efficiency:
+- When `k = 0`: Routing becomes round-robin, giving equal probability to all instances
+- When `k` is large: Routing heavily favors staked operators
+- During low network utilization: `k` increases to reward staked operators
+- During high network utilization: `k` decreases to leverage all available capacity
+
+For operators, this means that during periods of low demand, having stake becomes increasingly important for receiving jobs. During peak demand, even operators with minimal stake can contribute and earn rewards.
+
+### VRAM Normalization
+
+Since operators manage varying numbers of GPUs with different VRAM capacities, the routing system normalizes stake based on VRAM. For example:
+- Operator A: 100,000 INT staked, running 4x RTX 4090s (96GB total VRAM)
+- Operator B: 100,000 INT staked, running 1x A100 (80GB VRAM)
+
+Despite equal stake, Operator A's individual 4090s each receive: 100,000 × (24/96) = 25,000 effective stake per device, while Operator B's A100 receives the full 100,000 stake allocation.
+
+## Solana-Based Staking Protocol
+
+### Technical Implementation
+
+The Inference.net staking protocol is implemented as a Solana program using the SPL token standard for $INT-DEV tokens. The protocol manages:
+- Operator pool creation and configuration
+- Stake delegation and undelegation
+- Commission rate management
+- Reward distribution
+- Slashing mechanisms (to be enabled in later phases)
+
+### Operator Pools
+
+Each operator can create a staking pool with the following configurable parameters:
+- **Commission Rate**: Percentage of epoch rewards retained by the operator (0-100%)
+- **Delegation Status**: Whether to accept external delegations
+- **Minimum Self-Stake**: Currently set at 10% of total pool stake
+
+Operators must maintain the minimum self-stake ratio to ensure alignment between pool performance and operator incentives. If delegations cause the self-stake ratio to fall below 10%, the operator must add additional stake or risk pool deactivation.
+
+### Delegation Mechanics
+
+Token holders can delegate $INT-DEV to operator pools to earn a share of rewards without running hardware. The delegation process:
+1. Tokens can be delegated immediately without cooldown
+2. Delegators earn rewards proportional to their stake percentage
+3. Rewards are calculated after operator commission
+4. Undelegating requires a 7-day cooldown period
+5. No rewards accrue during the cooldown period
+
+This design encourages stable, long-term delegation relationships while preventing rapid stake movements that could destabilize routing.
+
+## Dual Token System
+
+During Epoch 3, operators will interact with two distinct reward mechanisms:
+
+### $INT Points (Off-chain)
+- Accumulated in real-time as jobs are processed
+- Calculated based on computational work performed
+- May be awarded for non-compute contributions (guides, community help)
+- Serves as the primary performance metric during the testing phase
+
+### $INT-DEV Tokens (On-chain)
+- Distributed daily at midnight UTC
+- Based on stake-weighted job completion
+- Required for staking to receive job allocations
+- Exists only on Solana Devnet with no monetary value
+
+This dual approach allows us to test the on-chain protocol's economic mechanisms while maintaining flexibility in reward distribution during the development phase.
+
+## Reputation System (Coming Later in Epoch 3)
+
+While stake-weighted routing launches on June 13th, the reputation system will be enabled later in Epoch 3 after validating the base routing mechanism. The reputation score will incorporate:
+
+### Completion Score
+Operators are grouped into performance tiers based on successful request completion rates over a rolling multi-day window:
+- Tier 1 (>99.5% completion): 1.0 multiplier
+- Tier 2 (98-99.5% completion): 0.9 multiplier
+- Tier 3 (96-98% completion): 0.8 multiplier
+- And so forth...
+
+### Throughput Score
+Performance buckets based on tokens per second relative to model-specific benchmarks:
+- Benchmarks are set per model and GPU type
+- Operators meeting or exceeding benchmarks receive full score
+- Below-benchmark performance results in proportional score reduction
+
+### Penalty System
+- First offense: 1-hour timeout from job routing
+- Repeated offenses: Extended timeouts up to permanent suspension
+- Penalties affect both routing priority and reward eligibility
+
+## Long-term Implications
+
+The architectural changes in Epoch 3 establish the foundation for Inference.net's evolution from a points-based test network to a fully decentralized, economically sustainable inference protocol. The stake-weighted routing system creates a market mechanism for quality assurance, while the delegation system enables broader participation beyond hardware operators.
+
+As we progress through Epoch 3, we'll gather data on:
+- Optimal k parameter values for different network conditions
+- Stake distribution patterns and delegation preferences
+- Performance improvements from unified engine management
+- Economic efficiency of the dual-token model
+
+This data will inform the eventual transition to mainnet, where $INT tokens will replace the current testnet implementation.
+
+## Moving Forward
+
+We encourage all operators to thoroughly review the new documentation, prepare their systems for the June 6th launch, and participate actively in testing these new features. Your feedback during this phase is crucial for refining these systems before our eventual mainnet deployment.
+
+For technical support, detailed documentation, and community discussions, please visit:
+- Documentation: [docs.devnet.inference.net](https://docs.devnet.inference.net)
+- Dashboard: [devnet.inference.net](https://devnet.inference.net)
+- Discord: [discord.gg/kuzco](https://discord.gg/kuzco)

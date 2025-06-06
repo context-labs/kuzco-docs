@@ -1,0 +1,93 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz@0,14..32;1,14..32&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap");
+
+:root {
+  --inference-white: #f8f2ec;
+  --inference-white-darker: #f1e9e2;
+  --inference-white-lighter: #faf7f4;
+
+  --inference-black: #141414;
+  --inference-black-darker: #0f0f0f;
+
+  --inference-border-dark: #292929;
+  --inference-border-light: #e8e0d9;
+}
+
+h1,
+h3,
+h4,
+.eyebrow,
+h2.text-base,
+h6 {
+  /* font-family: 'JetBrains Mono', monospace; */
+  /* text-transform:uppercase; */
+}
+
+h2:not(.text-base) {
+  /* font-family: 'JetBrains Mono', monospace; */
+  /* text-transform:uppercase; */
+  /* padding-top: 56px; */
+  padding-bottom: 18px;
+  margin-bottom: 32px !important;
+  border-bottom: 1px solid black;
+}
+
+h5 {
+  /* font-family: 'JetBrains Mono', monospace; */
+  /* text-transform:uppercase; */
+  border-bottom: 1px solid #e8e0d9;
+  padding-bottom: 16px;
+}
+
+html {
+  #navigation-items {
+    /* font-family: 'JetBrains Mono', monospace; */
+    /* text-transform:uppercase; */
+  }
+  #navigation-items div a {
+    height: 48px;
+  }
+}
+
+html.dark {
+  .card {
+    background-color: var(--inference-black);
+    border-color: var(--inference-border-dark);
+  }
+  .card:hover {
+    border-color: var(--inference-white) !important;
+  }
+
+  h2:not(.text-base) {
+    border-bottom: 1px solid var(--inference-border-dark);
+  }
+  h5 {
+    border-bottom: 1px solid var(--inference-border-dark);
+  }
+  .codeblock-light {
+    border: 1px solid var(--inference-border-dark);
+  }
+}
+
+html:not(.dark) {
+  .card {
+    background-color: var(--inference-white);
+    border-color: var(--inference-white-darker);
+    background-color: var(--inference-white-lighter);
+  }
+  .card:hover {
+    border-color: var(--inference-black) !important;
+  }
+  .codeblock-light {
+    border: 1px solid var(--inference-border-light);
+    background-color: var(--inference-white-lighter);
+  }
+  h2:not(.text-base) {
+    border-bottom: 1px solid var(--inference-border-light);
+  }
+  h5 {
+    border-bottom: 1px solid var(--inference-border-light);
+  }
+}
+.list-none {
+  height: 40px;
+}
