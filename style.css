@@ -12,6 +12,10 @@
   --inference-border-light: #e8e0d9;
 }
 
+th {
+  text-align: left;
+}
+
 h1,
 h3,
 h4,
