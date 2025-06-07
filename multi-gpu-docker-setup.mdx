@@ -1,0 +1,520 @@
+---
+title: Multi-GPU Docker Setup
+description: Advanced multi-GPU deployment strategies for maximum performance and scalability
+---
+
+# Multi-GPU Docker Setup
+
+This guide provides comprehensive instructions for deploying Inference.net workers across multiple GPUs using Docker containers. Perfect for operators with multi-GPU mining rigs or professional workstations seeking maximum performance and earnings.
+
+<Info>
+**Prerequisites:**
+- Multiple NVIDIA GPUs with at least 16GB VRAM each
+- Completed basic [Docker Installation](/advanced/docker)
+- Docker with NVIDIA Container Toolkit installed
+- Active Inference.net account with verified email
+</Info>
+
+## Overview
+
+Multi-GPU setups allow you to maximize your hardware investment by running multiple workers simultaneously. This guide covers three deployment strategies:
+
+1. **Single Container Multi-GPU** - One container utilizing all GPUs
+2. **Multiple Containers** - Dedicated container per GPU (Recommended)
+3. **Hybrid Deployment** - Mixed strategies for optimal resource utilization
+
+## Strategy 1: Single Container Multi-GPU
+
+### When to Use
+- Unified monitoring and management
+- Consistent model loading across GPUs
+- Simplified resource allocation
+
+### Implementation
+
+First, verify all GPUs are detected:
+```bash
+docker run --rm --runtime=nvidia --gpus all nvidia/cuda:11.8-base-ubuntu20.04 nvidia-smi
+```
+
+Deploy single container with all GPUs:
+```bash
+docker run \
+  --pull=always \
+  --restart=always \
+  --runtime=nvidia \
+  --gpus all \
+  --name inference-multi-gpu \
+  -v ~/.inference:/root/.inference \
+  -e CUDA_VISIBLE_DEVICES=0,1,2,3 \
+  inferencedevnet/amd64-nvidia-inference-node:latest \
+  --code <your-worker-code>
+```
+
+### Resource Limits (Recommended)
+```bash
+docker run \
+  --pull=always \
+  --restart=always \
+  --runtime=nvidia \
+  --gpus all \
+  --memory=32g \
+  --cpus=8 \
+  --name inference-multi-gpu \
+  -v ~/.inference:/root/.inference \
+  inferencedevnet/amd64-nvidia-inference-node:latest \
+  --code <your-worker-code>
+```
+
+## Strategy 2: Multiple Containers (Recommended)
+
+### Advantages
+- Independent worker scaling
+- Isolated fault tolerance
+- Flexible resource management
+- Individual GPU monitoring
+
+### Prerequisites
+
+Create separate workers for each GPU in your dashboard:
+1. Navigate to "Workers" tab
+2. Create individual workers (e.g., "GPU-0", "GPU-1", "GPU-2", "GPU-3")
+3. Note each worker's unique code
+
+### GPU Detection
+```bash
+# List available GPUs
+nvidia-smi -L
+
+# Expected output:
+# GPU 0: NVIDIA GeForce RTX 4090 (UUID: GPU-xxx...)
+# GPU 1: NVIDIA GeForce RTX 4090 (UUID: GPU-xxx...)
+# GPU 2: NVIDIA GeForce RTX 4090 (UUID: GPU-xxx...)
+# GPU 3: NVIDIA GeForce RTX 4090 (UUID: GPU-xxx...)
+```
+
+### Individual Container Deployment
+
+**GPU 0 Container:**
+```bash
+docker run \
+  --pull=always \
+  --restart=always \
+  --runtime=nvidia \
+  --gpus '"device=0"' \
+  --name inference-gpu-0 \
+  -v ~/.inference-gpu0:/root/.inference \
+  inferencedevnet/amd64-nvidia-inference-node:latest \
+  --code <gpu-0-worker-code>
+```
+
+**GPU 1 Container:**
+```bash
+docker run \
+  --pull=always \
+  --restart=always \
+  --runtime=nvidia \
+  --gpus '"device=1"' \
+  --name inference-gpu-1 \
+  -v ~/.inference-gpu1:/root/.inference \
+  inferencedevnet/amd64-nvidia-inference-node:latest \
+  --code <gpu-1-worker-code>
+```
+
+**GPU 2 Container:**
+```bash
+docker run \
+  --pull=always \
+  --restart=always \
+  --runtime=nvidia \
+  --gpus '"device=2"' \
+  --name inference-gpu-2 \
+  -v ~/.inference-gpu2:/root/.inference \
+  inferencedevnet/amd64-nvidia-inference-node:latest \
+  --code <gpu-2-worker-code>
+```
+
+**GPU 3 Container:**
+```bash
+docker run \
+  --pull=always \
+  --restart=always \
+  --runtime=nvidia \
+  --gpus '"device=3"' \
+  --name inference-gpu-3 \
+  -v ~/.inference-gpu3:/root/.inference \
+  inferencedevnet/amd64-nvidia-inference-node:latest \
+  --code <gpu-3-worker-code>
+```
+
+### Automation Script
+
+Create a deployment script for faster setup:
+
+```bash
+#!/bin/bash
+# multi-gpu-deploy.sh
+
+# GPU and Worker Code Arrays
+WORKER_CODES=("code1" "code2" "code3" "code4")
+GPU_COUNT=4
+
+for i in $(seq 0 $((GPU_COUNT-1))); do
+    echo "Starting container for GPU $i"
+    docker run -d \
+        --pull=always \
+        --restart=always \
+        --runtime=nvidia \
+        --gpus "\"device=$i\"" \
+        --name "inference-gpu-$i" \
+        -v "$HOME/.inference-gpu$i:/root/.inference" \
+        inferencedevnet/amd64-nvidia-inference-node:latest \
+        --code "${WORKER_CODES[$i]}"
+    
+    echo "GPU $i container started successfully"
+    sleep 5
+done
+
+echo "All containers deployed!"
+```
+
+Make executable and run:
+```bash
+chmod +x multi-gpu-deploy.sh
+./multi-gpu-deploy.sh
+```
+
+## Strategy 3: Hybrid Deployment
+
+### Mixed GPU Configuration
+
+For systems with different GPU types (e.g., RTX 4090 + RTX 3090):
+
+**High-Performance GPUs (RTX 4090):**
+```bash
+docker run \
+  --pull=always \
+  --restart=always \
+  --runtime=nvidia \
+  --gpus '"device=0"' \
+  --memory=16g \
+  --cpus=4 \
+  --name inference-rtx4090 \
+  -v ~/.inference-4090:/root/.inference \
+  inferencedevnet/amd64-nvidia-inference-node:latest \
+  --code <rtx4090-worker-code>
+```
+
+**Standard GPUs (RTX 3090):**
+```bash
+docker run \
+  --pull=always \
+  --restart=always \
+  --runtime=nvidia \
+  --gpus '"device=1"' \
+  --memory=12g \
+  --cpus=3 \
+  --name inference-rtx3090 \
+  -v ~/.inference-3090:/root/.inference \
+  inferencedevnet/amd64-nvidia-inference-node:latest \
+  --code <rtx3090-worker-code>
+```
+
+## Performance Optimization
+
+### Memory Management
+
+**Monitor GPU memory usage:**
+```bash
+# Real-time monitoring
+watch -n 1 nvidia-smi
+
+# Container-specific monitoring
+docker stats inference-gpu-0 inference-gpu-1 inference-gpu-2 inference-gpu-3
+```
+
+### Resource Allocation
+
+**CPU Allocation per GPU:**
+```bash
+# For 16-core system with 4 GPUs
+--cpus=4  # 4 cores per container
+```
+
+**Memory Allocation:**
+```bash
+# Based on GPU VRAM
+--memory=8g   # For 16GB GPU (conservative)
+--memory=12g  # For 24GB GPU (conservative)
+--memory=16g  # For high-performance setups
+```
+
+### Thermal Management
+
+**Temperature monitoring:**
+```bash
+# Check thermal status
+nvidia-smi -q -d TEMPERATURE
+
+# Set power limits if needed
+sudo nvidia-smi -pl 300  # 300W limit per GPU
+```
+
+## Monitoring and Management
+
+### Container Status
+```bash
+# View all inference containers
+docker ps --filter "name=inference"
+
+# Check specific container logs
+docker logs inference-gpu-0 --tail 50 -f
+
+# View resource usage
+docker stats --format "table {{.Container}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.NetIO}}"
+```
+
+### Health Checks
+```bash
+# Verify GPU access in each container
+for i in {0..3}; do
+    echo "Checking GPU $i container:"
+    docker exec inference-gpu-$i nvidia-smi -L
+done
+```
+
+### Dashboard Monitoring
+
+Monitor all workers simultaneously:
+1. Log into [Inference.net Dashboard](https://devnet.inference.net/dashboard)
+2. Navigate to "Workers" tab
+3. Verify all GPUs show "Active" status
+4. Monitor earnings across all workers
+
+## Troubleshooting
+
+### Common Issues
+
+**Container Fails to Start:**
+```bash
+# Check GPU availability
+nvidia-smi
+
+# Verify Docker NVIDIA runtime
+docker run --rm --runtime=nvidia --gpus all nvidia/cuda:11.8-base-ubuntu20.04 nvidia-smi
+
+# Check container logs
+docker logs inference-gpu-0
+```
+
+**GPU Not Detected in Container:**
+```bash
+# Verify GPU assignment
+docker inspect inference-gpu-0 | grep -A 5 "DeviceRequests"
+
+# Test GPU access
+docker exec inference-gpu-0 nvidia-smi
+```
+
+**Memory Issues:**
+```bash
+# Check host memory
+free -h
+
+# Monitor container memory
+docker stats inference-gpu-0
+
+# Adjust memory limits
+docker update --memory=8g inference-gpu-0
+```
+
+**Performance Issues:**
+```bash
+# Check thermal throttling
+nvidia-smi -q -d TEMPERATURE
+
+# Monitor clock speeds
+nvidia-smi -q -d CLOCK
+
+# Verify power limits
+nvidia-smi -q -d POWER
+```
+
+### Recovery Procedures
+
+**Restart Individual Container:**
+```bash
+docker restart inference-gpu-0
+```
+
+**Restart All Containers:**
+```bash
+for i in {0..3}; do
+    docker restart inference-gpu-$i
+done
+```
+
+**Complete Reset:**
+```bash
+# Stop all containers
+docker stop $(docker ps -q --filter "name=inference")
+
+# Remove containers
+docker rm $(docker ps -aq --filter "name=inference")
+
+# Redeploy using automation script
+./multi-gpu-deploy.sh
+```
+
+## Production Best Practices
+
+### System Configuration
+
+**NVIDIA Persistence Mode:**
+```bash
+# Enable for better performance
+sudo nvidia-persistenced --user root
+
+# Verify status
+nvidia-smi -q -d PERSISTENCE_MODE
+```
+
+**Docker Daemon Configuration:**
+Add to `/etc/docker/daemon.json`:
+```json
+{
+    "default-runtime": "nvidia",
+    "runtimes": {
+        "nvidia": {
+            "path": "nvidia-container-runtime",
+            "runtimeArgs": []
+        }
+    }
+}
+```
+
+Restart Docker:
+```bash
+sudo systemctl restart docker
+```
+
+### Automation and Scaling
+
+**Systemd Service for Auto-Start:**
+
+Create `/etc/systemd/system/inference-multi-gpu.service`:
+```ini
+[Unit]
+Description=Inference.net Multi-GPU Workers
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/home/user/multi-gpu-deploy.sh
+ExecStop=/usr/bin/docker stop inference-gpu-0 inference-gpu-1 inference-gpu-2 inference-gpu-3
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable auto-start:
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable inference-multi-gpu.service
+sudo systemctl start inference-multi-gpu.service
+```
+
+### Security Considerations
+
+**Container Security:**
+```bash
+# Run with limited privileges
+--user $(id -u):$(id -g)
+--read-only
+--tmpfs /tmp
+```
+
+**Network Isolation:**
+```bash
+# Create dedicated network
+docker network create inference-net
+
+# Deploy with custom network
+--network inference-net
+```
+
+## Performance Benchmarks
+
+### Expected Performance (Per GPU)
+
+| GPU Model | VRAM | Expected Jobs/Hour | Power Draw |
+|-----------|------|-------------------|------------|
+| RTX 4090 | 24GB | 15-25 | 350W |
+| RTX 4080 | 16GB | 12-20 | 280W |
+| RTX 3090 | 24GB | 10-18 | 320W |
+| RTX 3080 | 12GB | 8-15 | 300W |
+
+### Multi-GPU Scaling
+
+**4x RTX 4090 System:**
+- Total Performance: 60-100 jobs/hour
+- Power Consumption: ~1400W
+- Estimated Monthly Earnings: Variable based on stake and network demand
+
+## Advanced Configuration
+
+### Load Balancing
+
+For advanced users, consider using Docker Swarm or Kubernetes for orchestration:
+
+**Docker Compose Example:**
+```yaml
+version: '3.8'
+services:
+  inference-gpu-0:
+    image: inferencedevnet/amd64-nvidia-inference-node:latest
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=0
+    volumes:
+      - ~/.inference-gpu0:/root/.inference
+    command: --code <gpu-0-code>
+    restart: always
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]
+```
+
+### Monitoring Integration
+
+**Prometheus + Grafana Setup:**
+- Monitor GPU metrics across all containers
+- Track earnings and performance trends
+- Set up alerts for container failures
+
+**Integration with existing monitoring:**
+```bash
+# Export metrics
+docker exec inference-gpu-0 cat /proc/1/metrics
+```
+
+## Conclusion
+
+Multi-GPU Docker deployments maximize your hardware investment and earnings potential on Inference.net. The multiple container strategy provides the best balance of performance, reliability, and management flexibility.
+
+For additional support, join our [Discord community](https://discord.gg/kuzco) or visit the [support page](/community/support).
+
+### Next Steps
+
+1. Deploy your multi-GPU setup using the strategies above
+2. Monitor performance through the dashboard
+3. Optimize resource allocation based on your specific hardware
+4. Scale your operation with additional GPUs as needed
+
+Happy mining! 🚀
