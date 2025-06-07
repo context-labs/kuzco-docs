@@ -49,6 +49,46 @@ docker run \
   --code <code>
 ```
 
+#### Running Multiple Containers on Multi-GPU Systems (Linux Only)
+Note: This approach is only supported on Linux systems due to Docker's GPU assignment limitations on Windows.
+
+When you have multiple GPUs and want to run separate Docker containers with each container using a different GPU, follow these steps:
+
+1. Identify Available GPUs
+First, check your available GPUs and their IDs:
+```bash
+nvidia-smi
+```
+
+2. Run Containers with Specific GPU Assignment
+Run each container with a specific GPU using the device ID (0, 1, etc.):
+
+Container 1 (GPU 0):
+```bash
+docker run \
+  --name inference-gpu0 \
+  --pull=always \
+  --restart=always \
+  --runtime=nvidia \
+  --gpus device=0 \
+  -v ~/.inference/gpu0:/root/.inference \
+  inferencedevnet/amd64-nvidia-inference-node:latest \
+  --code <worker_code_1>
+```
+
+Container 2 (GPU 1):
+```bash
+docker run \
+  --name inference-gpu1 \
+  --pull=always \
+  --restart=always \
+  --runtime=nvidia \
+  --gpus device=1 \
+  -v ~/.inference/gpu1:/root/.inference \
+  inferencedevnet/amd64-nvidia-inference-node:latest \
+  --code <worker_code_2>
+```
+
 #### Windows Installation
 1. Download and install [Docker Desktop for Windows](https://www.docker.com/products/docker-desktop)
 2. Download and install the [NVIDIA Driver](https://www.nvidia.com/download/index.aspx) for your GPU
