@@ -1,6 +1,6 @@
-# Kuzco Operators Documentation
+# Inference Operators Documentation
 
-Welcome to the official documentation for Kuzco operators! This documentation site is built with [Mintlify](https://mintlify.com).
+Welcome to the official documentation for Inference operators! This documentation site is built with [Mintlify](https://mintlify.com).
 
 ## 🚀 Quick Start
 
