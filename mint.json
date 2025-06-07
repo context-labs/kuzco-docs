@@ -71,7 +71,8 @@
     {
       "group": "Advanced",
       "pages": [
-        "advanced/docker"
+        "advanced/docker",
+        "advanced/multiple-gpu"
       ]
     },
     
