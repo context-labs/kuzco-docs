@@ -30,6 +30,18 @@ sudo apt install nvidia-driver-XXX  # Replace XXX with the recommended version n
 ```
    You can check the recommended driver version for your GPU at [NVIDIA's driver download page](https://www.nvidia.com/download/index.aspx)
 
+## Setup Verification
+   ```bash
+   # Check Docker installation
+   docker --version
+   docker info
+
+   # Verify NVIDIA drivers
+   nvidia-smi
+   
+   # Check NVIDIA Docker support
+   docker run --rm --gpus all nvidia/cuda:11.8.0-base-ubuntu22.04 nvidia-smi
+
 3. Install [NVIDIA Container Toolkit for Linux](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)
 4. Register a Inference.net account at [https://devnet.inference.net/register](https://devnet.inference.net/register)
 5. Verify your email after registration
@@ -76,7 +88,7 @@ Once your node is started, you will see it enter the "Initializing" state on the
 
 ### Running Multiple Containers on Multi-GPU Devices
 
-If you have a system with multiple graphics cards (GPUs), you can run several Docker containers at the same time, with each container using a different GPU. Think of this like having multiple workers, each with their own dedicated graphics card to work with.
+If you have a system with multiple graphics cards (GPUs), you can run several Docker containers at the same time, with each container using a different GPU. Think of this like having multiple workers, each with their own dedicated graphics card to work with. This setup helps you make the most of your hardware.
 
 #### Understanding GPU Selection
 
@@ -84,8 +96,7 @@ Your GPU(s) are numbered starting from 0 (the first GPU) to however many you ins
 
 Think of this like assigning specific tools to specific workers - you're telling each container which GPU(s) it's allowed to use.
 
-
-
+# How to specify GPU to docker
 ```bash
 # Let the container use all your GPUs
 docker run --gpus all ...
@@ -98,22 +109,22 @@ docker run --gpus '"device=0"' ...
 ```
 # So for multiple GPUs 
 
-docker run -d \                  # To run process in background
+docker run -d \                  
   --pull=always \               
   --restart=always \             
   --runtime=nvidia \             
-  --gpus "device=0" \            # To Use the first GPU
+  --gpus '"device=0"' \          # To Use the first GPU
   -v ~/.inference:/root/.inference \ 
   --name inference-node-1 \      # Give container name of your choosing
   inferencedevnet/amd64-nvidia-inference-node:latest \
   --code <code1>                
 
 
-docker run -d \                  # To run process in background  
+docker run -d \                  
   --pull=always \               
   --restart=always \             
   --runtime=nvidia \             
-  --gpus "device=1" \            # To Use the second GPU
+  --gpus '"device=1"' \          # To Use the second GPU
   -v ~/.inference:/root/.inference \ 
   --name inference-node-1 \      # Give container name of your choosing
   inferencedevnet/amd64-nvidia-inference-node:latest \
@@ -130,7 +141,7 @@ Use the following command to specify resoureces: Remember to specify resources a
 
 ```bash
 docker run \
-  --gpus "device=0" \            # Use the first GPU
+  --gpus '"device=0"'\           # Use the first GPU
   --memory=16g \                 # Allow up to 16 gigabytes of memory.  Note:Recommended minimum memory space is 30 gigabytes
   --cpus=8 \                     # Allow up to 8 CPU cores
   inferencedevnet/amd64-nvidia-inference-node:latest \
@@ -148,7 +159,7 @@ docker run -d \                  # To run process in background
   --pull=always \                
   --restart=always \            
   --runtime=nvidia \             
-  --gpus "device=0" \            # Use the first GPU
+  --gpus '"device=0"' \          # Use the first GPU
   --memory=30g \                 # Allow 30GB memory
   --cpus=8 \                     # Allow 8 CPU cores
   -v ~/.inference:/root/.inference \ 
@@ -163,7 +174,7 @@ docker run -d \                   # To run process in background
   --pull=always \
   --restart=always \
   --runtime=nvidia \
-  --gpus "device=1" \             # Use the second GPU
+  --gpus '"device=1"' \           # Use the second GPU
   --memory=30g \                  # Allow 30GB memory 
   --cpus=8 \                      # Allow 8 CPU cores
   -v ~/.inference:/root/.inference \
@@ -172,23 +183,93 @@ docker run -d \                   # To run process in background
   --code <code2>
 ```
 
-#### Checking How Your GPUs Are Doing
+## Common Issues and Solutions
 
-You can monitor how your GPUs are working using these simple commands:
+   If containers fail to start:
+   ```bash
+   # Check Docker daemon status
+   sudo systemctl status docker
 
-```bash
-# See all GPU statistics (temperature, memory usage, etc.)
-nvidia-smi
+   # Restart Docker daemon
+   sudo systemctl restart docker
 
-# See how much resources your containers are using
-docker stats
-```
+   # Check Docker logs
+   sudo journalctl -fu docker
+   ```
 
-# To check logs 
-sudo docker logs <container_name>
-```
+   If GPU access fails:
+   ```bash
+   # Verify NVIDIA runtime
+   docker info | grep nvidia
 
+   # Check GPU visibility
+   nvidia-smi -L
 
+   # Reset NVIDIA drivers (if needed)
+   sudo nvidia-smi --gpu-reset
+   ```
 
+   
+ ## Detailed GPU Monitoring
+   ```bash
+   # Check GPU usage and memory in real-time
+   watch -n 1 nvidia-smi
 
+   # Get detailed memory usage per GPU
+   nvidia-smi --query-gpu=timestamp,name,memory.used,memory.total,memory.free --format=csv
 
+   # Monitor specific GPU processes
+   nvidia-smi --query-compute-apps=pid,process_name,used_memory --format=csv -l 1
+   ```
+
+## Container Health Checks
+   ```bash
+   # Check container status
+   docker ps -a
+
+   # View container logs
+   docker logs <container_name>
+   
+   # Follow logs in real-time
+   docker logs -f <container_name>
+
+   # Check container resource usage
+   docker stats <container_name>
+   ```
+
+ ## Handling Container Failures
+   ```bash
+   # Stop a container gracefully
+   docker stop <container_name>
+
+   # Force stop if needed
+   docker kill <container_name>
+
+   # Remove container (to start fresh)
+   docker rm <container_name>
+
+   # Clean up unused resources
+   docker system prune
+   ```
+ ## Automatic Restart Policies
+   ```bash
+   # Always restart (even after system reboot)
+   docker run -d --restart always ...
+
+   # Restart on failure (up to 5 times)
+   docker run -d --restart on-failure:5 ...
+
+   # Restart unless stopped manually
+   docker run -d --restart unless-stopped ...
+   ```
+
+ ## Performance Monitoring
+   ```bash
+   # Monitor container metrics
+   docker stats --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.NetIO}}"
+
+   # Check GPU temperature and power
+   nvidia-smi --query-gpu=temperature.gpu,power.draw,power.limit --format=csv -l 1
+   ```
+
+Remember: Always check logs when troubleshooting issues.
