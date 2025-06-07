@@ -89,6 +89,52 @@ docker run \
   --code <worker_code_2>
 ```
 
+#### Quick Deployment
+Deploy one Inference.net container per GPU (adjust range based on your GPU count)
+```bash
+for i in {0..5}; do
+  sudo docker run -d \
+    --name inference-gpu-$i \
+    --pull=always \
+    --gpus device=$i \
+    --restart=always \
+    -v ~/.inference_gpu_$i:/root/.inference \
+    inferencedevnet/amd64-nvidia-inference-node:latest \
+    --code <YOUR_NODE_CODE_HERE>
+done
+```
+#### Notes
+- Replace `<YOUR_NODE_CODE_HERE>` with your **node code** from the [Inference.net dashboard](https://devnet.inference.net/register).
+- The loop runs **one container per GPU**. Adjust `{0..5}` according to the number of GPUs on your machine.
+- Containers will be named `inference-gpu-0`, `inference-gpu-1`, etc.
+- Each container will use a separate `.inference_gpu_$i` folder to avoid conflicts.
+
+#### Monitoring Containers
+
+Check container logs:
+
+```bash
+docker logs -f inference-gpu-0
+```
+
+List running containers:
+
+```bash
+docker ps
+```
+
+Stop all containers:
+
+```bash
+docker stop $(docker ps -q --filter "name=inference-gpu-")
+```
+
+Remove all containers:
+
+```bash
+docker rm $(docker ps -aq --filter "name=inference-gpu-")
+```
+
 #### Windows Installation
 1. Download and install [Docker Desktop for Windows](https://www.docker.com/products/docker-desktop)
 2. Download and install the [NVIDIA Driver](https://www.nvidia.com/download/index.aspx) for your GPU
