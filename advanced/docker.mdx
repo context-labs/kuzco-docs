@@ -72,3 +72,61 @@ docker run \
 ```
 
 Once your node is started, you will see it enter the "Initializing" state on the dashboard. This means that your node is preparing to accept tasks. Depending on the speed of your GPU, this process may take up to 10 minutes, but generally only takes a minute or two.
+
+
+### Multiple GPU Case
+
+For systems with multiple GPUs, you can run separate containers for each GPU device. This requires executing the docker command once for each GPU, changing the device index from 0 to (number of GPUs - 1).
+
+**GPU Indexing:** Starts from 0. For a 4-GPU system, use device=0, device=1, device=2, device=3.
+
+#### Basic Command Structure
+```bash
+sudo docker run \
+  --pull=always \
+  --restart=always \
+  --runtime=nvidia \
+  --gpus device=i \
+  -v ~/.inference:/root/.inference \
+  inferencedevnet/amd64-nvidia-inference-node:latest \
+  --code <code>
+```
+
+Where i is the GPU index (0 to number of GPUs - 1).
+
+#### Example: Dual GPU System (2 commands)
+
+```bash
+# GPU 0
+sudo docker run -d \
+  --name inference-gpu-0 \
+  --pull=always \
+  --restart=always \
+  --runtime=nvidia \
+  --gpus device=0 \
+  -v ~/.inference:/root/.inference \
+  inferencedevnet/amd64-nvidia-inference-node:latest \
+  --code <code>
+
+# GPU 1
+sudo docker run -d \
+  --name inference-gpu-1 \
+  --pull=always \
+  --restart=always \
+  --runtime=nvidia \
+  --gpus device=1 \
+  -v ~/.inference:/root/.inference \
+  inferencedevnet/amd64-nvidia-inference-node:latest \
+  --code <code>
+```
+
+#### Container Management
+**View containers:**
+```bash
+sudo docker ps
+```
+
+**Check logs:**
+```bash
+sudo docker logs <container_name>
+```
