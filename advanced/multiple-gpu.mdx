@@ -1,0 +1,133 @@
+---
+title: Multiple GPU
+description: Deploy multiple Inference nodes using Docker on Windows and Linux across multiple GPUs.
+---
+
+# Multiple Docker Containers on Multi-GPU Devices
+Running multiple Inference nodes on a single machine with multiple GPUs, you'll launch a separate Docker container for each node. Each container can then be assigned to a specific GPU or a set of GPUs. This allows each Inference.net worker to utilize its dedicated GPU resources, maximizing throughput.
+please refer to the [Docker Installation](/advanced/docker) guide for single-GPU setup.
+
+### Requirements
+
+ Windows or Linux operating system
+* Multiple NVIDIA GPUs found in our list of [supported hardware](/getting-started/hardware)
+* Read and Install Prerequisites for [Windows](/advanced/docker#windows-installation) or [Linux](/advanced/docker#linux-installation)
+
+#### Running on Linux
+
+1. Open your terminal.
+2. Run the following command:
+    ```bash
+    nvidia-smi -L
+    ```
+    Example Output:
+
+    ```
+    GPU 0: NVIDIA GeForce RTX 3090 (UUID: GPU-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
+    GPU 1: NVIDIA A100 (UUID: GPU-yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy)
+    ```
+    The number directly after "GPU" (e.g., `0`, `1`) is the `GPU index` you'll use in your Docker commands.
+3. Run the Docker containers:
+
+    For each worker you create and its corresponding GPU, you'll run a separate `docker run` command. Remember to replace `<GPU_INDEX>` with the actual GPU index (--name is optional) and `<code>` with the unique worker code for that specific worker.
+    ```bash
+    docker run -d \
+      --name inference-node-gpu<GPU index> \ 
+      --pull=always \
+      --restart=always \
+      --runtime=nvidia \
+      --gpus <GPU index> \
+      -v ~/.inference:/root/.inference-gpu0 \
+      inferencedevnet/amd64-nvidia-inference-node:latest \
+      --code <code>
+    ``` 
+    Example for a 2-GPU system (GPU 0 and GPU 1):
+
+    Container 1 (for GPU 0):
+
+    ```bash
+    docker run -d \
+      --name inference-node-gpu0 \
+      --pull=always \
+      --restart=always \
+      --runtime=nvidia \
+      --gpus 0 \
+      -v ~/.inference:/root/.inference-gpu0 \
+      inferencedevnet/amd64-nvidia-inference-node:latest \
+      --code <code>
+    ```
+
+    Container 2 (for GPU 1):
+
+    ```bash
+    docker run -d \
+      --name inference-node-gpu1 \
+      --pull=always \
+      --restart=always \
+      --runtime=nvidia \
+      --gpus 1 \
+      -v ~/.inference:/root/.inference-gpu1 \
+      inferencedevnet/amd64-nvidia-inference-node:latest \
+      --code <code>
+    ```
+
+#### Running on Windows
+
+1.  Open PowerShell or Windows Terminal.
+2.  Run the following command:
+    ```powershell
+    nvidia-smi -L
+    ```
+    Example Output:
+
+    ```
+    GPU 0: NVIDIA GeForce RTX 3090 (UUID: GPU-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
+    GPU 1: NVIDIA A100 (UUID: GPU-yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy)
+    ```
+    The number directly after "GPU" (e.g., `0`, `1`) is the `GPU index` you'll use in your Docker commands.
+
+3.  Open PowerShell or Windows Terminal and run the Docker containers:
+
+    For each worker you create and its corresponding GPU, you'll run a separate `docker run` command. Remember to replace `<GPU_INDEX>` with the actual GPU index (--name is optional) and `<code>` with the unique worker code for that specific worker.
+    ```powershell
+    docker run -d `
+      --name inference-node-gpu<GPU index> `
+      --pull=always `
+      --restart=always `
+      --runtime=nvidia `
+      --gpus <GPU index> `
+      -v "$HOME/.inference:/root/.inference-gpu0" `
+      inferencedevnet/amd64-nvidia-inference-node:latest `
+      --code <code>
+    ```
+    Example for a 2-GPU system (GPU 0 and GPU 1):
+
+    Container 1 (for GPU 0):
+
+    ```powershell
+    docker run -d `
+      --name inference-node-gpu0 `
+      --pull=always `
+      --restart=always `
+      --runtime=nvidia `
+      --gpus 0 `
+      -v "$HOME/.inference:/root/.inference-gpu0" `
+      inferencedevnet/amd64-nvidia-inference-node:latest `
+      --code <code>
+    ```
+
+    Container 2 (for GPU 1):
+
+    ```powershell
+    docker run -d `
+      --name inference-node-gpu1 `
+      --pull=always `
+      --restart=always `
+      --runtime=nvidia `
+      --gpus 1 `
+      -v "$HOME/.inference:/root/.inference-gpu1" `
+      inferencedevnet/amd64-nvidia-inference-node:latest `
+      --code <code>
+    ```
+
+Once your node is started, you will see it enter the "Initializing" state on the dashboard. This means that your node is preparing to accept tasks. Depending on the speed of your GPU, this process may take up to 10 minutes, but generally only takes a minute or two.
