@@ -7,3 +7,4 @@ test/code_blocks/
 **/node_modules/
 package.json
 package-lock.json
+.idea/
