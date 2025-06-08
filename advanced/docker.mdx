@@ -3,273 +3,325 @@ title: Docker Installation
 description: Deploy Inference.net nodes using Docker on Windows and Linux
 ---
 
-# Docker Installation
+This guide provides detailed instructions for deploying Inference.net nodes using Docker. If you're new to Docker, please refer to the [Docker documentation](https://docs.docker.com/get-started/). Join our Discord community if you need assistance.
 
-This document provides detailed instructions to deploy Inference.net nodes using Docker. If you are unfamiliar with Docker, please refer to the [Docker documentation](https://docs.docker.com/get-started/). Join us on Discord if you need further assistance.
+## Requirements
 
-### Requirements
- - Windows or Linux operating system
- - Any NVIDIA GPU found in our list of [supported hardware](/getting-started/hardware)
- - Docker Desktop (Windows) or Docker Engine (Linux)
+- Windows or Linux operating system
+- NVIDIA GPU from our [supported hardware list](/getting-started/hardware)
+- Docker Desktop (Windows) or Docker Engine (Linux)
+- NVIDIA drivers and container toolkit
 
-#### Linux Installation
-1. Download and install [Docker Engine for Linux](https://docs.docker.com/engine/install/ubuntu/)
-2. Install NVIDIA Driver using terminal:
-```bash
-sudo apt update
-sudo apt install ubuntu-drivers-common
-sudo ubuntu-drivers autoinstall
-```
+## Linux Installation
 
-Or manually select and install a specific driver version:
-```bash
-sudo apt update
-sudo apt install ubuntu-drivers-common
-ubuntu-drivers devices
-sudo apt install nvidia-driver-XXX  # Replace XXX with the recommended version number
-```
-   You can check the recommended driver version for your GPU at [NVIDIA's driver download page](https://www.nvidia.com/download/index.aspx)
+### Prerequisites
 
-## Setup Verification
+1. **Install Docker Engine**
+   
+   Follow the official [Docker Engine installation guide for Linux](https://docs.docker.com/engine/install/ubuntu/).
+
+2. **Install NVIDIA Drivers**
+   
+   Option A: Automatic installation
+   ```bash
+   sudo apt update
+   sudo apt install ubuntu-drivers-common
+   sudo ubuntu-drivers autoinstall
+   ```
+   
+   Option B: Manual installation
+   ```bash
+   sudo apt update
+   sudo apt install ubuntu-drivers-common
+   ubuntu-drivers devices
+   sudo apt install nvidia-driver-XXX  # Replace XXX with recommended version
+   ```
+   
+   Find your recommended driver version at [NVIDIA's driver download page](https://www.nvidia.com/download/index.aspx).
+
+3. **Install NVIDIA Container Toolkit**
+   
+   Follow the [NVIDIA Container Toolkit installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker).
+
+4. **Verify Installation**
    ```bash
    # Check Docker installation
    docker --version
    docker info
-
+   
    # Verify NVIDIA drivers
    nvidia-smi
    
-   # Check NVIDIA Docker support
+   # Test NVIDIA Docker support
    docker run --rm --gpus all nvidia/cuda:11.8.0-base-ubuntu22.04 nvidia-smi
+   ```
 
-3. Install [NVIDIA Container Toolkit for Linux](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)
-4. Register a Inference.net account at [https://devnet.inference.net/register](https://devnet.inference.net/register)
-5. Verify your email after registration
-6. On the dashboard, navigate to the "Workers" tab on the left
-7. Click "Create Worker" in the top right-hand corner
-8. Enter a name for your worker, make sure "Docker" is selected, and click "Create Worker"
-9. On the Worker Details page, click "Launch Worker" in the top right-hand corner
-10. Open Terminal and run the Docker container with yourcode:
-```bash
-docker run \
-  --pull=always \
-  --restart=always \
-  --runtime=nvidia \
-  --gpus all \
-  -v ~/.inference:/root/.inference \
-  inferencedevnet/amd64-nvidia-inference-node:latest \
-  --code <code>
-```
+### Start Node
 
-#### Windows Installation
-1. Download and install [Docker Desktop for Windows](https://www.docker.com/products/docker-desktop)
-2. Download and install the [NVIDIA Driver](https://www.nvidia.com/download/index.aspx) for your GPU
-3. Install [NVIDIA Container Toolkit for Windows](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)
-4. Register a Kuzco account at [https://devnet.inference.net/register](https://devnet.inference.net/register)
-5. Verify your email and connect your Discord account in Settings
-6. On the dashboard, navigate to the "Workers" tab on the left
-7. Click "Create Worker" in the top right-hand corner
-8. Enter a name for your worker, make sure "Docker" is selected, and click "Create Worker"
-9. On the Worker Details page, click "Launch Worker" in the top right-hand corner
-10. Open PowerShell or Windows Terminal and run the Docker container with your code:
-```bash
-docker run \
-  --pull=always \
-  --restart=always \
-  --runtime=nvidia \
-  --gpus all \
-  -v ~/.inference:/root/.inference \
-  inferencedevnet/amd64-nvidia-inference-node:latest \
-  --code <code>
-```
+1. Register an account at [https://devnet.inference.net/register](https://devnet.inference.net/register)
+2. Verify your email address
+3. Navigate to the **Workers** tab in your dashboard
+4. Click **Create Worker** in the top-right corner
+5. Enter a worker name, ensure **Docker** is selected, and click **Create Worker**
+6. On the Worker Details page, click **Launch Worker**
+7. Run the provided Docker command with your worker code:
 
-Once your node is started, you will see it enter the "Initializing" state on the dashboard. This means that your node is preparing to accept tasks. Depending on the speed of your GPU, this process may take up to 10 minutes, but generally only takes a minute or two.
+   ```bash
+   docker run \
+     --pull=always \
+     --restart=always \
+     --runtime=nvidia \
+     --gpus all \
+     -v ~/.inference:/root/.inference \
+     inferencedevnet/amd64-nvidia-inference-node:latest \
+     --code <your-worker-code>
+   ```
 
+Once started, your node will enter the "Initializing" state on the dashboard. This preparation phase typically takes 1-2 minutes but may take up to 10 minutes depending on your GPU.
 
-### Running Multiple Containers on Multi-GPU Devices
+## Windows Installation
 
-If you have a system with multiple graphics cards (GPUs), you can run several Docker containers at the same time, with each container using a different GPU. Think of this like having multiple workers, each with their own dedicated graphics card to work with. This setup helps you make the most of your hardware.
+### Prerequisites
+
+1. **Install Docker Desktop**
+   
+   Download and install [Docker Desktop for Windows](https://www.docker.com/products/docker-desktop).
+
+2. **Install NVIDIA Drivers**
+   
+   Download and install the appropriate [NVIDIA driver](https://www.nvidia.com/download/index.aspx) for your GPU.
+
+3. **Install NVIDIA Container Toolkit**
+   
+   Follow the [NVIDIA Container Toolkit guide for Windows](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker).
+
+### Start Node
+
+1. Register an account at [https://devnet.inference.net/register](https://devnet.inference.net/register)
+2. Verify your email address
+3. Navigate to the **Workers** tab in your dashboard
+4. Click **Create Worker** in the top-right corner
+5. Enter a worker name, ensure **Docker** is selected, and click **Create Worker**
+6. On the Worker Details page, click **Launch Worker**
+7. Run the provided Docker command with your worker code in PowerShell:
+
+   ```powershell
+   docker run `
+     --pull=always `
+     --restart=always `
+     --runtime=nvidia `
+     --gpus all `
+     -v ~/.inference:/root/.inference `
+     inferencedevnet/amd64-nvidia-inference-node:latest `
+     --code <your-worker-code>
+   ```
+
+Once started, your node will enter the "Initializing" state on the dashboard. This preparation phase typically takes 1-2 minutes but may take up to 10 minutes depending on your GPU.
+
+## Advanced Configuration
+
+### Running Multiple Containers on Multi-GPU Systems
+
+If you have multiple GPUs, you can run separate containers, each utilizing a different GPU. This maximizes your hardware utilization by running multiple workers simultaneously.
 
 #### Understanding GPU Selection
 
-Your GPU(s) are numbered starting from 0 (the first GPU) to however many you installed. You can specify to Docker which GPU(s) you want each container to use.
+GPUs are numbered starting from 0. You can specify which GPU(s) each container should use:
 
-Think of this like assigning specific tools to specific workers - you're telling each container which GPU(s) it's allowed to use.
-
-# How to specify GPU to docker
 ```bash
-# Let the container use all your GPUs
+# Use all available GPUs
 docker run --gpus all ...
 
-# Let the container use specific GPUs (in this case, the first and second GPU)
+# Use specific GPUs (e.g., first and second GPU)
 docker run --gpus '"device=0,1"' ...
 
-# Let the container use just one GPU (in this case, the first GPU)
+# Use a single GPU (e.g., first GPU)
 docker run --gpus '"device=0"' ...
 ```
-# So for multiple GPUs 
 
-docker run -d \                  
-  --pull=always \               
-  --restart=always \             
-  --runtime=nvidia \             
-  --gpus '"device=0"' \          # To Use the first GPU
-  -v ~/.inference:/root/.inference \ 
-  --name inference-node-1 \      # Give container name of your choosing
-  inferencedevnet/amd64-nvidia-inference-node:latest \
-  --code <code1>                
+#### Example: Multiple GPU Setup
 
+Run separate containers for each GPU:
 
-docker run -d \                  
-  --pull=always \               
-  --restart=always \             
-  --runtime=nvidia \             
-  --gpus '"device=1"' \          # To Use the second GPU
-  -v ~/.inference:/root/.inference \ 
-  --name inference-node-1 \      # Give container name of your choosing
-  inferencedevnet/amd64-nvidia-inference-node:latest \
-  --code <code1>                
-
-Do this for as many GPUs as you have
-
-
-#### Managing Resources (Memory and CPU)
-
-Just like you wouldn't want one program to use up all your computer's resources, you can set limits on how much memory and processing power each container can use:
-
-Use the following command to specify resoureces: Remember to specify resources according to your machine specs.
-
+**Container 1 (GPU 0):**
 ```bash
-docker run \
-  --gpus '"device=0"'\           # Use the first GPU
-  --memory=16g \                 # Allow up to 16 gigabytes of memory.  Note:Recommended minimum memory space is 30 gigabytes
-  --cpus=8 \                     # Allow up to 8 CPU cores
-  inferencedevnet/amd64-nvidia-inference-node:latest \
-  --code <code>
-```
-
-#### Example: Running Two Containers With Resource Managing
-
-Here's an example of running two inference nodes, each using a different GPU. 
-
-```bash
-# First container - using the first GPU (GPU 0)
-
-docker run -d \                  # To run process in background
-  --pull=always \                
-  --restart=always \            
-  --runtime=nvidia \             
-  --gpus '"device=0"' \          # Use the first GPU
-  --memory=30g \                 # Allow 30GB memory
-  --cpus=8 \                     # Allow 8 CPU cores
-  -v ~/.inference:/root/.inference \ 
-  --name inference-node-1 \      # Give container a unique name
-  inferencedevnet/amd64-nvidia-inference-node:latest \
-  --code <code1>                 
-
-# Second container - using the second GPU (GPU 1)
-# (Same settings as above, but using GPU 1 instead)
-
-docker run -d \                   # To run process in background
+docker run -d \
   --pull=always \
   --restart=always \
   --runtime=nvidia \
-  --gpus '"device=1"' \           # Use the second GPU
-  --memory=30g \                  # Allow 30GB memory 
-  --cpus=8 \                      # Allow 8 CPU cores
+  --gpus '"device=0"' \
   -v ~/.inference:/root/.inference \
-  --name inference-node-2 \       # Give container a unique name
+  --name inference-node-1 \
   inferencedevnet/amd64-nvidia-inference-node:latest \
-  --code <code2>
+  --code <your-worker-code>
 ```
 
-## Common Issues and Solutions
+**Container 2 (GPU 1):**
+```bash
+docker run -d \
+  --pull=always \
+  --restart=always \
+  --runtime=nvidia \
+  --gpus '"device=1"' \
+  -v ~/.inference:/root/.inference \
+  --name inference-node-2 \
+  inferencedevnet/amd64-nvidia-inference-node:latest \
+  --code <your-worker-code>
+```
 
-   If containers fail to start:
-   ```bash
-   # Check Docker daemon status
-   sudo systemctl status docker
+### Resource Management
 
-   # Restart Docker daemon
-   sudo systemctl restart docker
+Set memory and CPU limits to prevent resource contention:
 
-   # Check Docker logs
-   sudo journalctl -fu docker
-   ```
+```bash
+docker run \
+  --gpus '"device=0"' \
+  --memory=30g \        # Limit to 30GB RAM (minimum recommended)
+  --cpus=8 \            # Limit to 8 CPU cores
+  inferencedevnet/amd64-nvidia-inference-node:latest \
+  --code <your-worker-code>
+```
 
-   If GPU access fails:
-   ```bash
-   # Verify NVIDIA runtime
-   docker info | grep nvidia
+### Complete Multi-GPU Example
 
-   # Check GPU visibility
-   nvidia-smi -L
+Running two containers with resource limits:
 
-   # Reset NVIDIA drivers (if needed)
-   sudo nvidia-smi --gpu-reset
-   ```
+```bash
+# Container 1 - GPU 0
+docker run -d \
+  --pull=always \
+  --restart=always \
+  --runtime=nvidia \
+  --gpus '"device=0"' \
+  --memory=30g \
+  --cpus=8 \
+  -v ~/.inference:/root/.inference \
+  --name inference-node-1 \
+  inferencedevnet/amd64-nvidia-inference-node:latest \
+  --code <your-worker-code>
 
-   
- ## Detailed GPU Monitoring
-   ```bash
-   # Check GPU usage and memory in real-time
-   watch -n 1 nvidia-smi
+# Container 2 - GPU 1
+docker run -d \
+  --pull=always \
+  --restart=always \
+  --runtime=nvidia \
+  --gpus '"device=1"' \
+  --memory=30g \
+  --cpus=8 \
+  -v ~/.inference:/root/.inference \
+  --name inference-node-2 \
+  inferencedevnet/amd64-nvidia-inference-node:latest \
+  --code <your-worker-code>
+```
 
-   # Get detailed memory usage per GPU
-   nvidia-smi --query-gpu=timestamp,name,memory.used,memory.total,memory.free --format=csv
+## Troubleshooting
 
-   # Monitor specific GPU processes
-   nvidia-smi --query-compute-apps=pid,process_name,used_memory --format=csv -l 1
-   ```
+### Container Startup Issues
 
-## Container Health Checks
-   ```bash
-   # Check container status
-   docker ps -a
+When your Docker container fails to start or stops unexpectedly, these commands help diagnose and resolve Docker daemon-related issues. Use them to check if Docker is running properly, restart the service if needed, or examine system logs for error messages.
 
-   # View container logs
-   docker logs <container_name>
-   
-   # Follow logs in real-time
-   docker logs -f <container_name>
+```bash
+# Check Docker daemon status (Linux)
+sudo systemctl status docker
 
-   # Check container resource usage
-   docker stats <container_name>
-   ```
+# Restart Docker daemon (Linux)
+sudo systemctl restart docker
 
- ## Handling Container Failures
-   ```bash
-   # Stop a container gracefully
-   docker stop <container_name>
+# View Docker logs (Linux)
+sudo journalctl -fu docker
+```
 
-   # Force stop if needed
-   docker kill <container_name>
+### GPU Access Problems
 
-   # Remove container (to start fresh)
-   docker rm <container_name>
+These commands help troubleshoot GPU visibility and accessibility issues within Docker containers. Use them to verify that the NVIDIA runtime is properly configured, list available GPUs on your system, or reset a GPU that may be in an error state.
 
-   # Clean up unused resources
-   docker system prune
-   ```
- ## Automatic Restart Policies
-   ```bash
-   # Always restart (even after system reboot)
-   docker run -d --restart always ...
+```bash
+# Verify NVIDIA runtime
+docker info | grep nvidia
 
-   # Restart on failure (up to 5 times)
-   docker run -d --restart on-failure:5 ...
+# List available GPUs
+nvidia-smi -L
 
-   # Restart unless stopped manually
-   docker run -d --restart unless-stopped ...
-   ```
+# Reset GPU (if needed - Linux)
+sudo nvidia-smi --gpu-reset
+```
 
- ## Performance Monitoring
-   ```bash
-   # Monitor container metrics
-   docker stats --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.NetIO}}"
+### GPU Monitoring
 
-   # Check GPU temperature and power
-   nvidia-smi --query-gpu=temperature.gpu,power.draw,power.limit --format=csv -l 1
-   ```
+Monitor GPU performance and resource utilization in real-time. These commands are essential for tracking GPU memory usage, identifying bottlenecks, and ensuring your inference workloads are running efficiently. Use them to detect memory leaks or verify that your containers are properly utilizing GPU resources.
 
-Remember: Always check logs when troubleshooting issues.
+```bash
+# Real-time GPU monitoring
+watch -n 1 nvidia-smi
+
+# Detailed memory usage
+nvidia-smi --query-gpu=timestamp,name,memory.used,memory.total,memory.free --format=csv
+
+# Monitor GPU processes
+nvidia-smi --query-compute-apps=pid,process_name,used_memory --format=csv -l 1
+```
+
+### Container Management
+
+Essential commands for managing Docker containers running your inference nodes. Use these to check container health, view logs for debugging, follow real-time output during operations, or monitor resource consumption to ensure containers aren't exceeding system limits.
+
+```bash
+# Check container status
+docker ps -a
+
+# View container logs
+docker logs <container_name>
+
+# Follow logs in real-time
+docker logs -f <container_name>
+
+# Monitor resource usage
+docker stats <container_name>
+```
+
+### Handling Failures
+
+Commands for managing failed or problematic containers. Use these when you need to stop unresponsive containers, force-terminate hung processes, remove containers for a fresh start, or clean up disk space by removing unused Docker resources.
+
+```bash
+# Stop container gracefully
+docker stop <container_name>
+
+# Force stop
+docker kill <container_name>
+
+# Remove container
+docker rm <container_name>
+
+# Clean up unused resources
+docker system prune
+```
+
+### Restart Policies
+
+Configure automatic container restart behavior to ensure high availability of your inference nodes. These policies help maintain uptime by automatically restarting containers after crashes, system reboots, or failures, reducing the need for manual intervention.
+
+```bash
+# Always restart (including after reboot)
+docker run -d --restart always ...
+
+# Restart on failure (max 5 attempts)
+docker run -d --restart on-failure:5 ...
+
+# Restart unless manually stopped
+docker run -d --restart unless-stopped ...
+```
+
+### Performance Monitoring
+
+Advanced monitoring commands for tracking both container and GPU performance metrics. Use these to identify performance bottlenecks, monitor power consumption for efficiency optimization, or track temperature to prevent thermal throttling during intensive inference workloads.
+
+```bash
+# Monitor container metrics
+docker stats --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.NetIO}}"
+
+# Monitor GPU temperature and power
+nvidia-smi --query-gpu=temperature.gpu,power.draw,power.limit --format=csv -l 1
+```
+
+> **Tip:** Always check container logs first when troubleshooting issues. They often contain valuable error messages and diagnostic information.
