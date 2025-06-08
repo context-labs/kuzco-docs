@@ -12,6 +12,60 @@ This document provides detailed instructions to deploy Inference.net nodes using
  - Any NVIDIA GPU found in our list of [supported hardware](/getting-started/hardware)
  - Docker Desktop (Windows) or Docker Engine (Linux)
 
+### Automated Installation Script (Linux)
+
+We provide an automated installation script that handles the entire setup process. The script will:
+- Check and install system requirements (including Python dependencies)
+- Install or update NVIDIA drivers (automatic or manual selection)
+- Install Docker and NVIDIA Container Toolkit if not present
+- Set up and run Inference.net containers
+- Support single or multiple GPU configurations
+- Monitor GPU health and status
+
+#### Download and Run the Script
+
+1. Download the installation script:
+```bash
+curl -O https://raw.githubusercontent.com/inference/operator-docs/main/scripts/setup-inference.sh
+```
+
+2. Make the script executable:
+```bash
+chmod +x setup-inference.sh
+```
+
+3. Run the script:
+```bash
+sudo bash setup-inference.sh
+```
+
+The script will guide you through the installation process with the following options:
+- Driver Installation: Automatic or manual version selection
+- Worker Code: Enter once and use for all containers
+- Deployment Options:
+  - Run single container using all GPUs
+  - Run separate container for each GPU
+  - Run containers on a specific number of GPUs (automatically assigned from GPU 0)
+
+Before running containers, the script will:
+- Check and install all dependencies (including Python packages)
+- Check GPU health (temperature, utilization, memory usage)
+- Verify system requirements
+- Install and configure Docker if not present
+- Install NVIDIA Container Toolkit if not present
+- Create necessary directories
+
+The script provides several safety features:
+- Automatic dependency resolution
+- GPU health monitoring
+- Docker permission handling
+- Container status verification
+- Detailed progress information
+
+### Manual Installation Steps
+
+If you prefer to perform the installation manually, follow these steps:
+
 #### Linux Installation
 1. Download and install [Docker Engine for Linux](https://docs.docker.com/engine/install/ubuntu/)
 2. Install NVIDIA Driver using terminal:
@@ -37,7 +91,7 @@ sudo apt install nvidia-driver-XXX  # Replace XXX with the recommended version n
 7. Click "Create Worker" in the top right-hand corner
 8. Enter a name for your worker, make sure "Docker" is selected, and click "Create Worker"
 9. On the Worker Details page, click "Launch Worker" in the top right-hand corner
-10. Open Terminal and run the Docker container with yourcode:
+10. Open Terminal and run the Docker container with your code:
 ```bash
 docker run \
   --pull=always \
@@ -72,3 +126,445 @@ docker run \
 ```
 
 Once your node is started, you will see it enter the "Initializing" state on the dashboard. This means that your node is preparing to accept tasks. Depending on the speed of your GPU, this process may take up to 10 minutes, but generally only takes a minute or two.
+
+### Multiple GPU - Automated Installation Script (Linux)
+For an easier installation process, we've created a simple automated script. This script will:
+- Check and install the required NVIDIA drivers (with automatic or manual options)
+- Install Docker if not present
+- Install NVIDIA Container Toolkit
+- Set up and run your Inference.net node
+
+# Function definitions
+print_gpu_info() {
+    echo ""
+    print_message "GPU Information:"
+    echo "----------------------------------------"
+    nvidia-smi --query-gpu=index,gpu_name,memory.total,memory.free,temperature.gpu,power.draw,utilization.gpu --format=csv,noheader | while IFS="," read -r id name total_mem free_mem temp power util; do
+        echo "GPU $id:"
+        echo "  Name:          $name"
+        echo "  Total Memory:  $total_mem"
+        echo "  Free Memory:   $free_mem"
+        echo "  Temperature:   $temp"
+        echo "  Power Usage:   $power"
+        echo "  Utilization:   $util"
+        echo "----------------------------------------"
+    done
+}
+
+check_gpu_health() {
+    local gpu_index=$1
+    local temp=$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits -i $gpu_index)
+    local util=$(nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits -i $gpu_index)
+    local memory_used=$(nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits -i $gpu_index)
+
+    if [ $temp -gt 80 ]; then
+        print_error "Warning: GPU $gpu_index temperature is high ($temp°C)"
+        return 1
+    fi
+
+    if [ $util -gt 50 ]; then
+        print_error "Warning: GPU $gpu_index is already under significant load ($util%)"
+        return 1
+    fi
+
+    if [ $memory_used -gt 1000 ]; then
+        print_error "Warning: GPU $gpu_index has significant memory usage (${memory_used}MB)"
+        return 1
+    fi
+
+    return 0
+}
+
+verify_requirements() {
+    # Check if nvidia-smi is available
+    if ! command -v nvidia-smi &> /dev/null; then
+        print_error "nvidia-smi not found. Please install NVIDIA drivers first."
+        exit 1
+    fi
+
+    # Check if Docker is installed
+    if ! command -v docker &> /dev/null; then
+        print_error "Docker not found. Please install Docker first."
+        exit 1
+    fi
+
+    # Check Docker service status
+    if ! systemctl is-active --quiet docker; then
+        print_error "Docker service is not running. Starting Docker service..."
+        sudo systemctl start docker
+    fi
+
+    # Check if user has Docker permissions
+    if ! docker info &> /dev/null; then
+        print_error "Current user doesn't have permission to use Docker."
+        print_message "Adding current user to docker group..."
+        sudo usermod -aG docker $USER
+        print_message "Please log out and log back in for changes to take effect."
+        exit 1
+    fi
+}
+
+# Start of main script
+clear
+echo "================================================"
+print_message "Welcome to the Inference.net Setup Script!"
+echo "================================================"
+
+# Verify system requirements
+verify_requirements
+
+# Step 1: Update system
+print_message "Updating system packages..."
+sudo apt update
+
+# Step 2: Install NVIDIA drivers
+print_message "NVIDIA Driver Installation"
+echo "Choose your installation method:"
+echo "1) Automatic installation (recommended)"
+echo "2) Manual installation (specify driver version)"
+read -p "Enter your choice (1 or 2): " DRIVER_CHOICE
+
+case $DRIVER_CHOICE in
+    1)
+        print_message "Installing NVIDIA drivers automatically..."
+        sudo apt install -y ubuntu-drivers-common
+        sudo ubuntu-drivers autoinstall
+        ;;
+    2)
+        print_message "Preparing for manual driver installation..."
+        sudo apt install -y ubuntu-drivers-common
+        echo ""
+        print_message "Available drivers for your system:"
+        ubuntu-drivers devices
+        echo ""
+        read -p "Enter the driver version number (e.g., 525): " DRIVER_VERSION
+        if [ -z "$DRIVER_VERSION" ]; then
+            print_error "Driver version cannot be empty"
+            exit 1
+        fi
+        print_message "Installing NVIDIA driver version $DRIVER_VERSION..."
+        sudo apt install -y nvidia-driver-$DRIVER_VERSION
+        ;;
+    *)
+        print_error "Invalid choice. Exiting..."
+        exit 1
+        ;;
+esac
+
+# Step 3: Install Docker if not present
+if ! command -v docker &> /dev/null; then
+    print_message "Installing Docker..."
+    sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt update
+    sudo apt install -y docker-ce docker-ce-cli containerd.io
+    sudo systemctl start docker
+    sudo systemctl enable docker
+    print_success "Docker installed successfully!"
+else
+    print_success "Docker is already installed!"
+fi
+
+# Step 4: Install NVIDIA Container Toolkit
+print_message "Installing NVIDIA Container Toolkit..."
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+sudo apt update
+sudo apt install -y nvidia-docker2
+sudo systemctl restart docker
+
+# Step 5: Create directory for Inference.net
+print_message "Setting up Inference.net directory..."
+mkdir -p ~/.inference
+chmod 777 ~/.inference
+
+# Step 6: Configure and run Docker container(s)
+print_message "Checking available GPUs..."
+GPU_COUNT=$(nvidia-smi --query-gpu=gpu_name --format=csv,noheader | wc -l)
+if [ "$GPU_COUNT" -lt 1 ]; then
+    print_error "No GPUs detected. Please check your NVIDIA driver installation."
+    exit 1
+fi
+
+print_message "Found $GPU_COUNT GPU(s) in your system"
+print_gpu_info
+
+echo ""
+echo "Choose your deployment option:"
+echo "1) Run single container using all GPUs"
+echo "2) Run separate container for each GPU"
+echo "3) Run containers on specific number of GPUs"
+read -p "Enter your choice (1, 2, or 3): " CONTAINER_CHOICE
+
+case $CONTAINER_CHOICE in
+    1)
+        print_message "Starting single container with all GPUs..."
+        # Check health of all GPUs
+        for i in $(seq 0 $(($GPU_COUNT-1))); do
+            if ! check_gpu_health $i; then
+                read -p "GPU $i shows warning signs. Continue anyway? (y/n): " CONTINUE
+                if [[ ! $CONTINUE =~ ^[Yy]$ ]]; then
+                    print_message "Aborting deployment. Please check GPU status."
+                    exit 1
+                fi
+            fi
+        done
+
+        docker run -d \
+            --pull=always \
+            --restart=always \
+            --runtime=nvidia \
+            --gpus all \
+            --name inference-all-gpus \
+            -v ~/.inference:/root/.inference \
+            inferencedevnet/amd64-nvidia-inference-node:latest \
+            --code $WORKER_CODE
+        ;;
+    2)
+        print_message "Starting deployment for $GPU_COUNT GPUs..."
+        echo "You will need a separate worker code for each GPU."
+
+        for i in $(seq 0 $(($GPU_COUNT-1))); do
+            if ! check_gpu_health $i; then
+                read -p "GPU $i shows warning signs. Continue anyway? (y/n): " CONTINUE
+                if [[ ! $CONTINUE =~ ^[Yy]$ ]]; then
+                    print_message "Skipping GPU $i"
+                    continue
+                fi
+            fi
+
+            echo ""
+            print_message "Setting up container for GPU $i"
+            read -p "Enter worker code for GPU $i: " WORKER_CODE_GPU
+
+            if [ -z "$WORKER_CODE_GPU" ]; then
+                print_error "Worker code cannot be empty. Skipping GPU $i"
+                continue
+            fi
+
+            print_message "Starting container for GPU $i..."
+            docker run -d \
+                --name inference-gpu-$i \
+                --pull=always \
+                --restart=always \
+                --runtime=nvidia \
+                --gpus device=$i \
+                -v ~/.inference_gpu_$i:/root/.inference \
+                inferencedevnet/amd64-nvidia-inference-node:latest \
+                --code $WORKER_CODE_GPU
+
+            print_success "Container for GPU $i started successfully!"
+        done
+        ;;
+    3)
+        while true; do
+            read -p "How many GPUs would you like to use? (1-$GPU_COUNT): " DESIRED_GPU_COUNT
+            if ! [[ "$DESIRED_GPU_COUNT" =~ ^[0-9]+$ ]] || [ "$DESIRED_GPU_COUNT" -lt 1 ] || [ "$DESIRED_GPU_COUNT" -gt "$GPU_COUNT" ]; then
+                print_error "Please enter a valid number between 1 and $GPU_COUNT"
+                continue
+            fi
+            break
+        done
+
+        echo ""
+        print_message "Available GPUs:"
+        print_gpu_info
+
+        declare -a SELECTED_GPUS
+        for i in $(seq 1 $DESIRED_GPU_COUNT); do
+            while true; do
+                read -p "Enter GPU index for container $((i-1)) (0-$(($GPU_COUNT-1))): " GPU_INDEX
+                if ! [[ "$GPU_INDEX" =~ ^[0-9]+$ ]] || [ "$GPU_INDEX" -ge "$GPU_COUNT" ]; then
+                    print_error "Please enter a valid GPU index between 0 and $(($GPU_COUNT-1))"
+                    continue
+                fi
+                if [[ " ${SELECTED_GPUS[@]} " =~ " ${GPU_INDEX} " ]]; then
+                    print_error "This GPU is already selected. Please choose a different one."
+                    continue
+                fi
+
+                if ! check_gpu_health $GPU_INDEX; then
+                    read -p "GPU $GPU_INDEX shows warning signs. Continue anyway? (y/n): " CONTINUE
+                    if [[ ! $CONTINUE =~ ^[Yy]$ ]]; then
+                        print_message "Please select a different GPU"
+                        continue
+                    fi
+                fi
+
+                SELECTED_GPUS+=($GPU_INDEX)
+                break
+            done
+
+            echo ""
+            print_message "Setting up container for GPU $GPU_INDEX"
+            read -p "Enter worker code for GPU $GPU_INDEX: " WORKER_CODE_GPU
+
+            if [ -z "$WORKER_CODE_GPU" ]; then
+                print_error "Worker code cannot be empty. Skipping GPU $GPU_INDEX"
+                continue
+            fi
+
+            print_message "Starting container for GPU $GPU_INDEX..."
+            docker run -d \
+                --name inference-gpu-$GPU_INDEX \
+                --pull=always \
+                --restart=always \
+                --runtime=nvidia \
+                --gpus device=$GPU_INDEX \
+                -v ~/.inference_gpu_$GPU_INDEX:/root/.inference \
+                inferencedevnet/amd64-nvidia-inference-node:latest \
+                --code $WORKER_CODE_GPU
+
+            print_success "Container for GPU $GPU_INDEX started successfully!"
+        done
+        ;;
+    *)
+        print_error "Invalid choice. Exiting..."
+        exit 1
+        ;;
+esac
+
+# Final message with container status
+echo ""
+echo "================================================"
+print_success "Setup completed! Your node(s) should start shortly."
+print_message "Checking container status..."
+docker ps --filter "name=inference-"
+echo ""
+print_message "To view your node's logs, use one of these commands:"
+print_message "- List all containers:    docker ps"
+print_message "- View specific logs:     docker logs -f <container_name>"
+if [ "$CONTAINER_CHOICE" = "1" ]; then
+    print_message "Your container name is: inference-all-gpus"
+elif [ "$CONTAINER_CHOICE" = "2" ]; then
+    print_message "Your containers are named: inference-gpu-0 through inference-gpu-$(($GPU_COUNT-1))"
+else
+    print_message "Your containers are named: inference-gpu-X (where X is your selected GPU index)"
+fi
+echo "================================================"
+
+# Recommend system restart
+echo ""
+print_message "It's recommended to restart your system now."
+read -p "Would you like to restart now? (y/n): " RESTART
+if [[ $RESTART =~ ^[Yy]$ ]]; then
+    print_message "Restarting system..."
+    reboot
+fi
+
+2. Make the script executable:
+```bash
+sudo chmod +x setup-inference.sh
+```
+
+3. Run the script:
+```bash
+sudo bash setup-inference.sh
+```
+
+The script will guide you through the installation process and prompt you for your worker code(s). You can find your worker code on the [Inference.net dashboard](https://devnet.inference.net) after creating a new worker. If you're planning to run multiple containers, make sure to create a separate worker for each GPU beforehand.
+
+### Monitoring and Managing Your Containers
+
+After setting up your container(s), you can use these commands to monitor and manage them:
+
+#### View Container Status and Logs
+
+Check the status of all containers:
+```bash
+docker ps                                    # Show running containers
+docker ps -a                                 # Show all containers (including stopped)
+```
+
+View logs for specific containers:
+```bash
+# For single GPU setup
+docker logs -f inference-all-gpus            # Follow logs of the main container
+
+# For multi-GPU setup
+docker logs -f inference-gpu-0               # Follow logs of GPU 0 container
+docker logs -f inference-gpu-1               # Follow logs of GPU 1 container
+docker logs --tail 100 inference-gpu-0       # Show last 100 log lines for GPU 0
+```
+
+#### Container Management Commands
+
+Stop containers:
+```bash
+# Stop a specific container
+docker stop inference-gpu-0                  # Stop GPU 0 container
+docker stop inference-all-gpus               # Stop single GPU container
+
+# Stop all inference containers
+docker stop $(docker ps -q --filter "name=inference-")
+```
+
+Start containers:
+```bash
+# Start a specific container
+docker start inference-gpu-0                 # Start GPU 0 container
+docker start inference-all-gpus              # Start single GPU container
+
+# Start all inference containers
+docker start $(docker ps -aq --filter "name=inference-")
+```
+
+Remove containers:
+```bash
+# Remove a specific container (must be stopped first)
+docker rm inference-gpu-0                    # Remove GPU 0 container
+docker rm inference-all-gpus                 # Remove single GPU container
+
+# Remove all inference containers (must be stopped first)
+docker rm $(docker ps -aq --filter "name=inference-")
+```
+
+#### Resource Monitoring
+
+Monitor GPU usage:
+```bash
+nvidia-smi                                   # Show current GPU status
+watch -n 1 nvidia-smi                        # Monitor GPU status every second
+```
+
+Monitor container resource usage:
+```bash
+docker stats                                 # Show live resource usage for all containers
+docker stats inference-gpu-0                 # Show live resource usage for specific container
+```
+
+#### Troubleshooting Commands
+
+Check container details:
+```bash
+docker inspect inference-gpu-0               # Show detailed container information
+docker inspect -f '{{.State.Status}}' inference-gpu-0  # Show container status
+```
+
+View container network information:
+```bash
+docker network inspect bridge                # Show network details
+```
+
+Restart a container (useful if issues occur):
+```bash
+docker restart inference-gpu-0               # Restart specific container
+docker restart $(docker ps -q --filter "name=inference-")  # Restart all inference containers
+```
+
+#### Container Maintenance
+
+Update container image:
+```bash
+docker pull inferencedevnet/amd64-nvidia-inference-node:latest  # Pull latest image
+```
+
+Clean up unused resources:
+```bash
+docker system prune                          # Remove unused data
+docker system prune -a                       # Remove all unused data (including images)
+```
+
+These commands will help you manage and monitor your Inference.net nodes effectively. Remember to replace container names according to your setup (inference-all-gpus for single GPU setup or inference-gpu-X for multi-GPU setup).
