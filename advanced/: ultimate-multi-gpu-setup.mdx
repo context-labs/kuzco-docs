@@ -1,0 +1,267 @@
+---
+title: "Ultimate Multi-GPU Mining Setup"
+description: "Interactive auto-persistence installer for maximum GPU mining efficiency"
+---
+
+# 🔥 Ultimate Multi-GPU Inference.net Mining Setup
+
+**The Revolutionary Auto-Persistence Installer That Changes Everything**
+
+## 🎯 What Makes This Ultimate?
+
+- **🤖 Interactive Installation** - No manual editing required
+- **💾 Auto-Saves Configuration** - Remembers your setup forever  
+- **🔄 Auto-Starts on Boot** - Deploy once, mine forever
+- **📊 Smart Restart Logic** - Use existing config or start fresh
+- **🎮 Beautiful User Interface** - Colored prompts and validation
+
+## 📋 Features
+
+✅ **Automatic GPU Detection**  
+✅ **Interactive Worker Code Collection**  
+✅ **Custom Container Naming**  
+✅ **Configuration Persistence**  
+✅ **Auto-Boot Deployment**  
+✅ **Comprehensive Monitoring**  
+✅ **Error Handling & Recovery**  
+
+## 🚀 Quick Start
+
+### Download and Run
+```bash
+# Download the installer
+wget https://raw.githubusercontent.com/bokiko/operator-docs/main/scripts/ultimate-gpu-installer.sh
+
+# Make executable
+chmod +x ultimate-gpu-installer.sh
+
+# Run interactive setup
+./ultimate-gpu-installer.sh
+```
+
+## 🎮 User Experience
+
+### First Run Experience
+1. **Auto-detects your GPUs** (shows count and models)
+2. **Asks how many GPUs** you want to use
+3. **Collects worker codes** interactively with validation
+4. **Custom container naming** (optional)
+5. **Shows deployment summary** for confirmation
+6. **Auto-saves configuration** for future use
+7. **Creates auto-boot service** for permanent setup
+8. **Deploys containers** and shows status
+
+### Subsequent Runs
+```
+🔥 ULTIMATE INFERENCE.NET INSTALLER 🔥
+========================================
+
+📋 EXISTING CONFIGURATION FOUND:
+================================
+   Created: 2025-06-08 15:30:45
+   GPUs: 8
+   Prefix: kuzco
+   Workers: 8 configured
+
+   GPU 0: kuzco-0 (793ed789...)
+   GPU 1: kuzco-1 (f3b74029...)
+   ...
+
+❓ Use existing configuration? (y/n)
+   y = Deploy with saved settings
+   n = Start fresh interactive setup
+```
+
+## 🔧 Prerequisites
+
+### System Requirements
+- **Ubuntu 20.04/22.04 LTS** (recommended)
+- **NVIDIA Drivers** (version 530+)  
+- **Docker** with NVIDIA runtime
+- **Multiple NVIDIA GPUs** (RTX 3060 Ti or higher)
+
+### Auto-Installation Check
+The script automatically checks and reports:
+- ✅ NVIDIA drivers installed
+- ✅ Docker installed and accessible
+- ✅ GPU detection working
+- ✅ Required packages (jq for JSON parsing)
+
+## 📊 Monitoring & Management
+
+### Real-Time Monitoring
+```bash
+# GPU usage monitoring
+watch -n 1 nvidia-smi
+
+# Container performance
+docker stats
+
+# Generated monitor script
+./monitor-rig.sh
+```
+
+### Management Commands
+```bash
+# Restart installer
+./ultimate-gpu-installer.sh
+
+# Stop all containers
+docker stop $(docker ps -q --filter 'name=your-prefix')
+
+# Check auto-start service
+sudo systemctl status inference-mining
+
+# View saved configuration
+cat ~/.inference-mining-config.json
+```
+
+## 🔄 Auto-Boot Setup
+
+The installer automatically creates a systemd service that:
+- **Starts on boot** without user interaction
+- **Uses saved configuration** to deploy containers
+- **Logs all activities** for troubleshooting
+- **Handles dependencies** (waits for Docker and NVIDIA services)
+
+### Service Management
+```bash
+# Check service status
+sudo systemctl status inference-mining
+
+# View service logs
+sudo journalctl -u inference-mining -f
+
+# Disable auto-start (if needed)
+sudo systemctl disable inference-mining
+```
+
+## 📁 Generated Files
+
+The installer creates these files automatically:
+
+### Configuration File
+**Location**: `~/.inference-mining-config.json`
+```json
+{
+  "timestamp": "2025-06-08 15:30:45",
+  "gpu_count": 8,
+  "container_prefix": "kuzco",
+  "worker_codes": [
+    "793ed789-703d-4bff-a6f1-8cfde3289a79",
+    "f3b74029-997f-4b3c-86c0-3be66ea0cbed"
+  ],
+  "script_path": "/home/user/ultimate-gpu-installer.sh"
+}
+```
+
+### Monitoring Script
+**Location**: `./monitor-rig.sh`
+- Shows GPU status with utilization
+- Displays container health
+- Reports system resources
+- Shows auto-start service status
+
+### Log File
+**Location**: `~/inference-installer.log`
+- Timestamps all activities
+- Tracks deployment success/failures
+- Useful for troubleshooting
+
+## 🎯 Supported Hardware
+
+### Recommended GPUs
+- **RTX 4090, 4080, 4070 Ti, 4070**
+- **RTX 3090, 3080, 3070 Ti, 3070, 3060 Ti**
+- **RTX A6000, A5000, A4000**
+- **Tesla V100, A100** (datacenter)
+
+### Example Configurations
+
+#### 8-GPU Beast Rig
+```
+3x RTX 3070 (8GB VRAM)
+2x RTX 3060 Ti (8GB VRAM)  
+3x RTX 3070 Ti (8GB VRAM)
+Expected: ~123-164 jobs/hour
+```
+
+#### 4-GPU Mid-Range
+```
+4x RTX 3060 Ti (8GB VRAM)
+Expected: ~48-64 jobs/hour
+```
+
+#### 2-GPU Starter
+```
+2x RTX 3070 (8GB VRAM)
+Expected: ~30-40 jobs/hour
+```
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+#### Docker Permission Denied
+```bash
+# Fix: Add user to docker group
+sudo usermod -aG docker $USER
+# Then logout and login again
+```
+
+#### Service Won't Start
+```bash
+# Check service logs
+sudo journalctl -u inference-mining -f
+
+# Common fix: Verify configuration
+cat ~/.inference-mining-config.json
+```
+
+#### GPU Not Detected
+```bash
+# Check NVIDIA drivers
+nvidia-smi
+
+# Reinstall if needed
+sudo ubuntu-drivers autoinstall
+sudo reboot
+```
+
+## 💡 Pro Tips
+
+### Maximum Performance
+1. **Create separate workers** for each GPU (recommended)
+2. **Use quality PSU** with sufficient wattage
+3. **Ensure proper cooling** for sustained operation
+4. **Monitor temperatures** regularly
+5. **Use stable internet** connection
+
+### Maintenance Schedule
+- **Daily**: Check dashboard for worker status
+- **Weekly**: Run monitor script, check logs
+- **Monthly**: Update system packages
+- **Quarterly**: Review and optimize setup
+
+## 📈 Expected Performance
+
+### Earnings Potential (Per Hour)
+- **RTX 4090**: ~30-40 jobs
+- **RTX 4080**: ~25-35 jobs  
+- **RTX 3090**: ~25-30 jobs
+- **RTX 3080**: ~20-25 jobs
+- **RTX 3070 Ti**: ~18-24 jobs
+- **RTX 3070**: ~15-20 jobs
+- **RTX 3060 Ti**: ~12-16 jobs
+
+*Performance varies based on network demand and job availability*
+
+## 🌐 Resources
+
+- **Dashboard**: https://devnet.inference.net/dashboard
+- **Official Docs**: https://docs.inference.net
+- **Script Source**: [View on GitHub](https://github.com/bokiko/operator-docs/blob/main/scripts/ultimate-gpu-installer.sh)
+
+---
+
+**🔥 The Ultimate Mining Setup - Install Once, Mine Forever! 💰**
