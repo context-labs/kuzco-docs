@@ -72,7 +72,7 @@
       "group": "Advanced",
       "pages": [
         "advanced/docker"
-            "advanced/multi-gpu-docker-setup"
+    "advanced/ultimate-multi-gpu-setup"
 
       ]
     },
