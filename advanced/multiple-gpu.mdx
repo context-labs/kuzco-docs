@@ -130,4 +130,15 @@ please refer to the [Docker Installation](/advanced/docker) guide for single-GPU
       --code <code>
     ```
 
+### Check Logs 
+List all running Docker containers :
+```bash
+ docker ps
+```  
+View logs of a specific container Replace `<container_id>` with your actual container ID from `docker ps` :
+
+```bash
+docker logs -f <container_id>
+```
+
 Once your node is started, you will see it enter the "Initializing" state on the dashboard. This means that your node is preparing to accept tasks. Depending on the speed of your GPU, this process may take up to 10 minutes, but generally only takes a minute or two.
