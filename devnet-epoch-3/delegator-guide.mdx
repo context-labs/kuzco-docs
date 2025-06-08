@@ -1,0 +1,293 @@
+---
+title: "Delegator Guide"
+description: "Earn rewards by staking your tokens to high-performing operator pools"
+---
+
+Delegators participate in the Inference.net network by staking $INT-DEV tokens to operator pools. This helps secure the network while earning a share of epoch rewards without running hardware.
+
+<Warning>
+  The staking protocol is being tested on Solana Devnet with test tokens. These
+  tokens have no monetary value and should not be used for real-world
+  transactions or bought or sold by anyone.
+</Warning>
+
+## How Delegation Works
+
+When you delegate tokens to an operator pool:
+
+1. Your tokens help increase the operator's priority for receiving inference jobs
+2. You earn a proportional share of the pool's token rewards
+3. The operator takes a commission fee from rewards before distribution
+4. Your tokens remain yours - operators cannot access delegated tokens
+
+<Note>
+  Delegated tokens are not at risk of slashing. Only operator stakes can be
+  slashed for poor performance.
+</Note>
+
+## Getting Started
+
+### Prerequisites
+
+- A Solana wallet with:
+  - Some SOL for transaction fees
+  - $INT-DEV tokens from the airdrop or test faucet
+- Basic understanding of staking and delegation
+
+### Step 1: Connect Your Wallet
+
+<Warning>
+  **Important**: Before continuing you must ensure your Solana wallet is set to
+  use Solana Devnet. Please see the [Wallet
+  Setup](/devnet-epoch-3/airdrop/#setting-up-your-wallet-for-devnet) guide for
+  more information.
+</Warning>
+
+1. Visit [stake.devnet.inference.net](https://stake.devnet.inference.net)
+2. Click **Connect Wallet** in the top right
+3. Select your wallet provider and approve the connection
+
+### Step 2: Browse Operator Pools
+
+Navigate to the **Operators** page to view all available pools. Key metrics to consider:
+
+**Pool Performance:**
+
+- **Rank**: Position by total stake (higher rank = more jobs)
+- **Total Stake**: Combined operator and delegator tokens
+- **Operator Stake**: Operator's self-stake percentage
+
+**Economic Terms:**
+
+- **Commission Rate**: Percentage of rewards kept by operator
+- **Delegation Allowed**: Whether the pool accepts external stake
+- **Auto Stake Fees**: If commission is automatically compounded
+
+### Step 3: Evaluate Operators
+
+Consider these factors when choosing an operator:
+
+1. **Stake Ratio**: Operators must maintain ≥10% of total pool stake
+2. **Commission Rate**: Lower rates mean higher delegator rewards
+3. **Track Record**: View historical performance in the operator details
+4. **Hardware**: GPUs with higher VRAM typically process more jobs
+5. **Communication**: Active operators often have websites or community presence
+
+<Tip>
+  Click on any operator to view detailed statistics, historical performance, and
+  pool configuration.
+</Tip>
+
+## Staking Process
+
+### Delegating Tokens
+
+1. Click on your chosen operator pool
+2. Click the **Stake** button
+3. Enter the amount of $INT-DEV to delegate
+4. Review the transaction details:
+   - Amount to stake
+   - Current pool commission
+   - Estimated share of pool
+5. Click **Confirm Stake**
+6. Approve the transaction in your wallet
+
+<Info>
+  You can stake to multiple operator pools to diversify your delegation
+  strategy.
+</Info>
+
+### Monitoring Your Stake
+
+View your delegations in two places:
+
+**My Operators Tab:**
+
+- Shows all pools where you have active stake
+- Displays your stake amount and current value
+- Shows pending unstaking amounts
+
+**Individual Pool Pages:**
+
+- Your specific stake in that pool
+- Accumulated rewards
+- Share percentage of the pool
+
+## Managing Delegations
+
+### Adding More Stake
+
+You can increase your delegation at any time:
+
+1. Navigate to the operator pool
+2. Click **Stake**
+3. Add the additional amount
+4. Confirm the transaction
+
+### Unstaking Process
+
+Unstaking requires a cooldown period:
+
+1. Click **Unstake** on the operator's page
+2. Enter the amount to unstake (partial or full)
+3. Confirm the transaction
+4. Wait for the cooldown period to complete
+5. Click **Withdraw** to claim your tokens
+
+<Warning>
+  When unstaking tokens, if you unstake more tokens while you have existing
+  tokens in cooldown, the cooldown timer will reset for all of the unstaking
+  tokens.
+</Warning>
+
+### Claiming Rewards
+
+Rewards are distributed automatically during the unstaking process. When you unstake and withdraw:
+
+- Your original stake is returned
+- Accumulated rewards are included
+- No separate claim transaction is needed
+
+## Choosing Operators Wisely
+
+### Green Flags
+
+- ✅ Consistent uptime and performance
+- ✅ Reasonable commission rates (10-30%)
+- ✅ Strong operator stake ratio (well above 10%)
+- ✅ Active community engagement
+- ✅ Professional setup with multiple GPUs
+
+### Red Flags
+
+- ❌ Operator stake near minimum (exactly 10%)
+- ❌ Very high commission rates (>50%)
+- ❌ Pool marked as "Halted"
+- ❌ No website or contact information
+- ❌ Frequent configuration changes
+
+## Risk Considerations
+
+While delegation is generally safe, consider:
+
+1. **Opportunity Cost**: Tokens are locked during staking and cooldown
+2. **Variable Returns**: Rewards depend on operator performance
+3. **Commission Changes**: Operators can adjust rates (effective next epoch)
+4. **Pool Closure**: Operators may close pools, stopping rewards for all delegators
+
+<Note>
+  Remember: $INT-DEV tokens are testnet tokens with no monetary value. They
+  exist purely for testing the protocol mechanics.
+</Note>
+
+## Maximizing Returns
+
+**Strategies for Delegators:**
+
+1. **Diversify**: Spread stake across multiple high-performing operators
+2. **Monitor Performance**: Regularly check operator metrics and adjust
+3. **Consider Pool Size**: Smaller pools may offer growth potential
+4. **Watch Commission**: Lower isn't always better - consider operator quality
+5. **Stay Informed**: Follow operator updates and network announcements
+
+## FAQ
+
+**Q: Can I lose my delegated tokens?**<br/>
+A: No, delegated tokens cannot be slashed. Only operator self-stake is at risk.
+
+**Q: How often are rewards distributed?**<br/>
+A: Token rewards accumulate continuously and are claimed when you unstake.
+
+**Q: Can I delegate to multiple pools?**<br/>
+A: Yes, you can delegate to as many pools as you wish.
+
+**Q: What happens if an operator closes their pool?**<br/>
+A: You will stop earnings and you will need to unstake your tokens.
+
+**Q: How long is the unstaking cooldown?**<br/>
+A: Delegators have a shorter cooldown than operators (specific duration varies by network configuration).
+
+For additional support or questions, join our [Discord](https://discord.gg/kuzco) community.
+
+## Understanding Pool Shares
+
+<Info>
+  Inference.net uses a share-based accounting system to fairly distribute
+  rewards. When you stake tokens, you receive shares that represent your
+  proportion of the pool.
+</Info>
+
+### How Shares Work
+
+When you stake tokens to a pool, you don't just hold tokens - you receive **shares** that represent your ownership percentage of the pool. This system allows rewards to be distributed fairly without complex calculations for each delegator.
+
+**The key formulas:**
+
+- When staking: `shares = (your tokens / total pool tokens) × total shares`
+- When unstaking: `tokens = (your shares / total shares) × total pool tokens`
+
+### Why Your Unstake Amount May Differ
+
+Due to how share calculations work with integer math, you might notice small differences between what you stake and what you can immediately unstake. This is normal and expected.
+
+<Warning>
+  **Precision Rounding Example:** If you stake 100 tokens to a pool that has
+  already received rewards, you might only be able to unstake 99 tokens
+  immediately. This happens because:
+  <ul>
+    <li>The pool's share-to-token ratio is no longer 1:1 after rewards</li>
+    <li>Integer division during share calculation rounds down</li>
+    <li>The "dust" (fractional tokens) remains in the pool</li>
+  </ul>
+  This is not a loss - it's how the protocol ensures fair reward distribution.
+</Warning>
+
+<Note>
+  Remember our token will have standard 9 decimal place precision, so in reality
+  any precision lost when initial staking occurs at very small fractions of a
+  token, e.g. 0.000001 tokens.
+</Note>
+
+### Practical Example
+
+Let's walk through a scenario:
+
+**Initial State:**
+
+- Pool has 1,000 tokens and 1,000 shares (1:1 ratio)
+- Pool receives 100 token rewards
+- Now: 1,100 tokens, 1,000 shares (1.1:1 ratio)
+
+**You stake 100 tokens:**
+
+- Your shares = (100 / 1,100) × 1,000 = 90.90... = 90 shares (rounded down)
+- Pool now has: 1,200 tokens, 1,090 shares
+
+**If you immediately unstake all shares:**
+
+- Your tokens = (90 / 1,090) × 1,200 = 99.08... = 99 tokens (rounded down)
+- The 1 token difference remains in the pool
+
+<Note>
+  This rounding effect is minimal and only affects immediate unstaking. As you
+  earn rewards over time, your share value increases, typically offsetting any
+  initial rounding.
+</Note>
+
+### Best Practices
+
+1. **Don't worry about small differences** - This is normal protocol behavior
+2. **Hold for rewards** - The longer you stake, the more your shares appreciate
+3. **Stake larger amounts** - Larger stakes minimize the relative impact of rounding
+4. **Consider it a contribution** - The dust helps maintain pool health
+
+### The Bigger Picture
+
+This share system enables:
+
+- ✅ Fair reward distribution to all delegators
+- ✅ Automatic compounding of rewards
+- ✅ Efficient on-chain calculations
+- ✅ Protection against gaming the system
+
+The tiny amounts lost to rounding are negligible compared to the rewards earned from staking over time.

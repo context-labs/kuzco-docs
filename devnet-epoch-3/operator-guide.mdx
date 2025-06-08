@@ -1,0 +1,170 @@
+---
+title: "Operator Guide"
+description: "Set up and manage your operator pool to receive inference jobs and earn rewards"
+---
+
+Operators run GPU hardware on the Inference.net network to process AI inference jobs. By creating an operator pool and staking $INT-DEV tokens, you increase your chances of receiving jobs and earning rewards.
+
+<Warning>
+  The staking protocol is being tested on Solana Devnet with test tokens. These
+  tokens have no monetary value and should not be used for real-world
+  transactions or bought or sold by anyone.
+</Warning>
+
+## Prerequisites
+
+Before setting up your operator pool:
+
+1. Ensure you have a funded Solana wallet with:
+   - Some SOL for transaction fees
+   - $INT-DEV tokens from the airdrop or faucet
+2. Link your Solana wallet to your Inference.net account
+3. Have your GPU node running and connected to the network
+
+## Creating Your Operator Pool
+
+An operator pool is your on-chain identity that manages stake, receives job allocations, and distributes rewards.
+
+<Warning>
+  **Important**: Before continuing you must ensure your Solana wallet is set to
+  use Solana Devnet. Please see the [Wallet
+  Setup](/devnet-epoch-3/airdrop/#setting-up-your-wallet-for-devnet) guide for
+  more information.
+</Warning>
+
+### Step 1: Link Your Wallet
+
+1. Navigate to the [Dashboard Wallets Page](https://devnet.inference.net/dashboard/wallets)
+2. Click **Connect Wallet** in the top right
+3. Select your Solana wallet provider and approve the connection
+4. Link your wallet to your account
+
+<Note>
+  To create an operator pool, you must have a Solana wallet linked to your
+  account. This wallet will be the admin wallet for your operator pool.
+</Note>
+
+### Step 2: Create Operator Pool
+
+1. Navigate to **Dashboard → Staking → Overview**
+2. Click **Create Operator Pool**
+3. Follow the steps to create your operator pool.
+
+   **Economic Settings:**
+
+   - **Commission Rate**: Percentage of rewards you keep (0-100%)
+   - **Allow Delegation**: Whether to accept stake from other token holders
+   - **Auto Stake Fees**: Automatically compound commission into your stake
+
+   **Payout Settings:**
+
+   - **USDC Payout Wallet**: Where to receive USDC revenue from inference jobs
+
+   **Profile Information:**
+
+   - **Organization Name**: Your operator pool's display name
+   - **Website URL**: Optional link to your website
+   - **Description**: Brief description of your operation
+
+4. Review your settings and click **Create Pool**
+5. Approve the transaction in your wallet
+
+<Warning>
+  Pool creation requires a small amount of SOL for transaction fees. Ensure your
+  wallet has sufficient SOL balance.
+</Warning>
+
+### Step 3: Stake Your Pool
+
+As an operator, you must maintain at least 10% of your pool's total stake. This ensures alignment between your performance and delegator rewards.
+
+1. On your pool overview page, click **Stake**
+2. Enter the amount of $INT-DEV to stake
+3. Review the transaction and click **Confirm Stake**
+4. Approve the transaction in your wallet
+
+<Info>
+  The more you stake, the higher your priority for receiving inference jobs.
+  Your effective stake per GPU is normalized by VRAM capacity.
+</Info>
+
+## Managing Your Pool
+
+### Monitoring Performance
+
+Your operator dashboard displays key metrics:
+
+- **Total Pool Stake**: Combined operator and delegator stake
+- **Operator Stake**: Your personal stake (must remain ≥10% of total)
+- **Commission Earned**: Accumulated fees from rewards
+- **USDC Revenue**: Earnings from completed inference jobs
+- **Total Delegators**: Number of external stakers
+
+### Adjusting Settings
+
+You can modify certain pool parameters after creation:
+
+1. Navigate to **Dashboard → Staking → Settings**
+2. Update available settings:
+   - Commission rate (changes apply next epoch)
+   - Allow/disallow delegations
+   - Auto-stake preferences
+   - Profile information
+   - USDC payout destination
+
+### Withdrawing Rewards
+
+**Commission Fees:**
+
+- If auto-stake is disabled, commission accumulates separately
+- Click **Withdraw Commission** to claim accumulated fees
+- Specify a destination wallet or use your connected wallet
+
+**Unstaking Process:**
+
+1. Click **Unstake** on your pool overview
+2. Enter the amount to unstake
+3. Wait for the cooldown period (varies for operators vs delegators)
+4. Click **Withdraw** once the cooldown expires
+
+<Note>
+  Operators have a longer unstaking cooldown than delegators to ensure network
+  stability.
+</Note>
+
+### Advanced Management
+
+**Emergency Actions:**
+
+- **Change Admin**: Transfer pool ownership to a new wallet
+- **Change Staking Record**: Update the operator stake wallet if compromised
+- **Close Pool**: Permanently close your operator pool (irreversible)
+
+## Best Practices
+
+1. **Maintain Adequate Stake**: Keep your operator stake well above the 10% minimum to accommodate delegator growth
+2. **Set Competitive Commission**: Balance earning potential with attractiveness to delegators
+3. **Monitor Hardware**: Ensure your GPUs maintain high uptime for better reputation scores
+4. **Engage Delegators**: Provide clear communication about your operation and performance
+
+## Troubleshooting
+
+**GPU Not Detected:**
+
+- Ensure latest GPU drivers are installed
+- Verify node has proper system permissions
+- Check that your GPU model is supported
+
+**Cannot Create Pool:**
+
+- Verify wallet has sufficient SOL for fees
+- Ensure wallet is properly linked to your account
+- Check that pool creation is currently enabled
+
+**Stake Transaction Fails:**
+
+- Confirm sufficient $INT-DEV token balance
+- Ensure you're not violating minimum stake requirements
+- Try refreshing and reconnecting your wallet
+
+For additional support, join our [Discord](https://discord.gg/kuzco) and open a support ticket.
