@@ -36,7 +36,7 @@ please refer to the [Docker Installation](/advanced/docker) guide for single-GPU
       --pull=always \
       --restart=always \
       --runtime=nvidia \
-      --gpus <GPU index> \
+      --gpus "device=<GPU index>" \
       -v ~/.inference:/root/.inference-gpu0 \
       inferencedevnet/amd64-nvidia-inference-node:latest \
       --code <code>
@@ -51,7 +51,7 @@ please refer to the [Docker Installation](/advanced/docker) guide for single-GPU
       --pull=always \
       --restart=always \
       --runtime=nvidia \
-      --gpus 0 \
+      --gpus "device=0" \
       -v ~/.inference:/root/.inference-gpu0 \
       inferencedevnet/amd64-nvidia-inference-node:latest \
       --code <code>
@@ -65,7 +65,7 @@ please refer to the [Docker Installation](/advanced/docker) guide for single-GPU
       --pull=always \
       --restart=always \
       --runtime=nvidia \
-      --gpus 1 \
+      --gpus "device=1" \
       -v ~/.inference:/root/.inference-gpu1 \
       inferencedevnet/amd64-nvidia-inference-node:latest \
       --code <code>
@@ -95,7 +95,7 @@ please refer to the [Docker Installation](/advanced/docker) guide for single-GPU
       --pull=always `
       --restart=always `
       --runtime=nvidia `
-      --gpus <GPU index> `
+      --gpus "device=<GPU index>" `
       -v "$HOME/.inference:/root/.inference-gpu0" `
       inferencedevnet/amd64-nvidia-inference-node:latest `
       --code <code>
@@ -110,7 +110,7 @@ please refer to the [Docker Installation](/advanced/docker) guide for single-GPU
       --pull=always `
       --restart=always `
       --runtime=nvidia `
-      --gpus 0 `
+      --gpus "device=0" `
       -v "$HOME/.inference:/root/.inference-gpu0" `
       inferencedevnet/amd64-nvidia-inference-node:latest `
       --code <code>
@@ -124,7 +124,7 @@ please refer to the [Docker Installation](/advanced/docker) guide for single-GPU
       --pull=always `
       --restart=always `
       --runtime=nvidia `
-      --gpus 1 `
+      --gpus "device=1" `
       -v "$HOME/.inference:/root/.inference-gpu1" `
       inferencedevnet/amd64-nvidia-inference-node:latest `
       --code <code>
