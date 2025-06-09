@@ -1,0 +1,224 @@
+---
+title: "Bug Bounty Program"
+description: "This program covers vulnerabilities in Inference.net's Solana smart contracts, inference system, and supporting infrastructure. Rewards are paid in USD based on severity and impact."
+---
+
+## Scope
+
+The following components are in scope for this bug bounty program:
+
+**Solana Smart Contracts:**
+
+- Staking protocol contract
+- Airdrop program contract
+- Delegation and reward distribution logic
+
+**Inference System:**
+
+- Node software and auto-update mechanisms
+- GPU detection and validation systems
+- Job routing and distribution logic
+- Inference engine management
+- API endpoints and authentication
+
+**Infrastructure:**
+
+- Dashboard and web applications
+- Wallet integration points
+- Off-chain reward calculation systems
+
+<Warning>
+  Out of Scope: Third-party services, social engineering attacks, and issues
+  already known or being addressed.
+</Warning>
+
+## Vulnerability Category Overview
+
+| Severity                  | USD Payout Range    |
+| ------------------------- | ------------------- |
+| Critical                  | \$10,000 - \$50,000 |
+| High                      | \$2,500 - \$10,000  |
+| Medium                    | \$500 - \$2,500     |
+| Low                       | \$100 - \$500       |
+| Inference System Exploits | \$1,000 - \$25,000  |
+
+### Critical Severity
+
+Vulnerabilities that could result in:
+
+- Direct theft of operator or delegator funds
+- Unauthorized minting or burning of tokens
+- Compromise of any on-chain vaults
+- Compromise of any system private keys
+- Arbitrary code execution on node infrastructure
+- Complete bypass of inference job authentication
+
+### High Severity
+
+Vulnerabilities that could result in:
+
+- Temporary freezing of user funds
+- Manipulation of reward calculations affecting multiple users
+- Unauthorized access to operator pools
+- Significant disruption of the inference network
+- Bypass of stake-weighted routing logic
+
+### Medium Severity
+
+Vulnerabilities that could result in:
+
+- Limited impact on individual users
+- Minor reward calculation errors
+- Temporary service disruptions
+- Information disclosure of non-sensitive data
+- Bypass of rate limiting or spam protections
+
+### Low Severity
+
+Vulnerabilities that could result in:
+
+- UI/UX issues with security implications
+- Minor information leaks
+- Best practice violations without direct impact
+- Issues requiring significant user interaction
+
+## Inference System Exploits
+
+We're particularly interested in vulnerabilities related to the integrity of our inference system:
+
+- Faking completed inference requests to earn rewards without processing
+- Manipulating job routing to receive disproportionate rewards
+- Bypassing GPU validation to register unsupported hardware
+- Exploiting the unified inference engine selection logic
+
+<Note>
+  Rewards for inference system exploits scale with the potential economic impact
+  and the number of affected operators or users.
+</Note>
+
+## Submission Process
+
+### How to Report
+
+1. **Prepare Your Report** (see template below) - Include:
+
+   - Detailed description of the vulnerability
+   - Step-by-step reproduction instructions
+   - Potential impact assessment
+   - Suggested fixes (if applicable)
+
+2. **Submit Securely**:
+
+   - Email: security@inference.net
+   - DO NOT disclose publicly before resolution
+
+3. **Wait for Acknowledgment**:
+   - Initial response within 48 hours
+   - Severity assessment within 7 days
+   - Resolution timeline provided based on severity
+
+### Report Template
+
+```markdown
+## Vulnerability Report
+
+**Reporter:** [Your name/handle]
+**Date:** [Submission date]
+**Severity Assessment:** [Your assessment]
+
+### Summary
+
+[Brief description of the vulnerability]
+
+### Details
+
+[Technical details and root cause]
+
+### Steps to Reproduce
+
+1. [Step 1]
+2. [Step 2]
+3. [...]
+
+### Impact
+
+[Potential damage if exploited]
+
+### Proof of Concept
+
+[Code or demonstration if applicable]
+
+### Suggested Fix
+
+[Your recommendations]
+```
+
+## Rules and Guidelines
+
+### Responsible Disclosure
+
+- **DO NOT** exploit vulnerabilities beyond proof of concept
+- **DO NOT** perform attacks that could harm users or the network
+- **DO NOT** publicly disclose before we've had time to fix the issue
+- **DO** report vulnerabilities promptly upon discovery
+- **DO** provide sufficient detail for reproduction
+
+## Review Process
+
+### Severity Assessment
+
+Our security team evaluates submissions based on:
+
+1. **Exploitability**: How difficult is the attack to execute?
+2. **Impact**: What damage could be caused?
+3. **Likelihood**: How probable is real-world exploitation?
+4. **Novelty**: Is this a new discovery or known issue?
+
+### Bounty Calculation
+
+Final rewards consider:
+
+- Severity level (Critical/High/Medium/Low)
+- Quality of the report and reproduction steps
+- Suggested fixes and mitigation strategies
+- Responsible disclosure adherence
+- First reporter (in case of duplicates)
+
+<Info>
+  Rewards are at the discretion of the Inference.net security team. We aim to be
+  fair and competitive with industry standards.
+</Info>
+
+## Contact
+
+Please submit all reports or questions to security@inference.net.
+
+## FAQ
+
+**Q: Can I test on the mainnet when it launches?**<br />
+A: No, all testing must be performed on Devnet only. Mainnet testing is
+strictly prohibited.
+
+**Q: Can I submit multiple vulnerabilities in one report?**<br />
+A: Please submit separate reports for distinct vulnerabilities to ensure
+proper tracking.
+
+**Q: What if my vulnerability is marked as duplicate?**<br />
+A: The first reporter receives the full reward. Subsequent reporters may
+receive a smaller acknowledgment reward.
+
+**Q: How do you handle partial vulnerabilities?**<br />
+A: We reward based on the furthest point of exploitation demonstrated, even if
+not fully weaponized.
+
+## Updates and Changes
+
+This bug bounty program may be updated as our system evolves:
+
+- Check this page regularly for updates
+- Major changes will be announced in Discord
+- Submissions are evaluated based on the rules at time of submission
+
+<Info>Last updated: June 2025 | Version 1.0</Info>
+
+Thank you for helping us secure Inference.net.
