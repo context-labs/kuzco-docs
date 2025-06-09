@@ -1,0 +1,571 @@
+---
+"Multi-GPU Docker Container Management"
+description: "Complete guide for running multiple Docker containers on multi-GPU devices for optimal inference performance"
+---
+
+<Metadata text="multi-gpu-docker/overview" />
+
+# Running Multiple Docker Containers on Multi-GPU Devices
+
+This comprehensive guide covers everything you need to know about efficiently managing multiple Docker containers across multiple GPUs for AI inference workloads.
+
+<Warning>
+Ensure your system meets the minimum requirements before proceeding with this guide.
+</Warning>
+
+## Prerequisites
+
+### Hardware Requirements
+
+<CardGroup cols={2}>
+  <Card title="GPU Requirements" icon="microchip">
+    - NVIDIA GPU(s) with compute capability 3.5+
+    - Minimum 4GB VRAM per container
+    - PCIe 3.0 x16 or better
+  </Card>
+  <Card title="System Requirements" icon="server">
+    - 2x total GPU VRAM in system RAM
+    - Fast NVMe storage (500+ MB/s)
+    - Reliable power supply (80+ Gold rated)
+  </Card>
+</CardGroup>
+
+### Software Requirements
+
+<Steps>
+  <Step title="Operating System">
+    Ubuntu 20.04+ or compatible Linux distribution
+  </Step>
+  <Step title="Container Runtime">
+    Docker 19.03+ with nvidia-container-toolkit
+  </Step>
+  <Step title="GPU Drivers">
+    NVIDIA Driver 450.80.02 or newer
+  </Step>
+</Steps>
+
+## Quick Start
+
+<Metadata text="multi-gpu-docker/quick-start" />
+
+```bash
+# 1. Verify GPU detection
+nvidia-smi
+
+# 2. Test Docker GPU access
+docker run --rm --gpus all nvidia/cuda:11.8-base-ubuntu20.04 nvidia-smi
+
+# 3. Deploy multiple containers
+docker-compose up -d
+```
+
+<Tip>
+Use `nvidia-smi -L` to list all available GPUs and their UUIDs for precise allocation.
+</Tip>
+
+## GPU Detection and Setup
+
+### Verify GPU Detection
+
+<Metadata text="multi-gpu-docker/gpu-detection" />
+
+```bash
+# Check NVIDIA driver installation
+nvidia-smi
+
+# List all available GPUs with details
+nvidia-smi --query-gpu=name,memory.total,compute_cap --format=csv
+
+# Get GPU UUIDs for precise allocation
+nvidia-smi -L
+```
+
+<AccordionGroup>
+  <Accordion title="Expected Output Example">
+    ```
+    GPU 0: NVIDIA GeForce RTX 4090 (UUID: GPU-12345678-1234-1234-1234-123456789abc)
+    GPU 1: NVIDIA GeForce RTX 4090 (UUID: GPU-87654321-4321-4321-4321-cba987654321)
+    ```
+  </Accordion>
+  <Accordion title="Troubleshooting GPU Detection">
+    If GPUs are not detected:
+    - Ensure NVIDIA drivers are properly installed
+    - Check if GPUs are properly seated in PCIe slots
+    - Verify power connections to GPUs
+    - Update BIOS/UEFI to latest version
+  </Accordion>
+</AccordionGroup>
+
+### Install NVIDIA Container Toolkit
+
+<Metadata text="multi-gpu-docker/nvidia-toolkit-install" />
+
+```bash
+# Add NVIDIA package repositories
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | \
+  sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+
+# Install nvidia-container-toolkit
+sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
+
+# Configure Docker to use nvidia runtime
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
+```
+
+## Docker GPU Configuration
+
+### GPU Allocation Methods
+
+<Tabs>
+  <Tab title="All GPUs">
+    <Metadata text="multi-gpu-docker/allocate-all-gpus" />
+    ```bash
+    docker run --gpus all my-inference-image
+    ```
+  </Tab>
+  <Tab title="Specific Count">
+    <Metadata text="multi-gpu-docker/allocate-count" />
+    ```bash
+    # Allocate 2 GPUs
+    docker run --gpus 2 my-inference-image
+    ```
+  </Tab>
+  <Tab title="By Index">
+    <Metadata text="multi-gpu-docker/allocate-by-index" />
+    ```bash
+    # Allocate GPUs 0 and 2
+    docker run --gpus '"device=0,2"' my-inference-image
+    ```
+  </Tab>
+  <Tab title="By UUID (Recommended)">
+    <Metadata text="multi-gpu-docker/allocate-by-uuid" />
+    ```bash
+    # Use specific GPU by UUID
+    docker run --gpus '"device=GPU-12345678-1234-1234-1234-123456789abc"' my-inference-image
+    ```
+  </Tab>
+</Tabs>
+
+<Info>
+Using UUIDs is recommended for production environments as it ensures consistent GPU allocation even if the system configuration changes.
+</Info>
+
+## Multi-Container GPU Allocation
+
+### Docker Compose Configuration
+
+<Metadata text="multi-gpu-docker/docker-compose-example" />
+
+```yaml
+version: '3.8'
+
+services:
+  inference-worker-gpu-0:
+    image: inference-worker:latest
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+      - WORKER_ID=worker-gpu-0
+      - GPU_INDEX=0
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]
+    volumes:
+      - ./models:/app/models
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  inference-worker-gpu-1:
+    image: inference-worker:latest
+    environment:
+      - CUDA_VISIBLE_DEVICES=0  # Container sees this as GPU 0
+      - WORKER_ID=worker-gpu-1
+      - GPU_INDEX=1
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['1']
+              capabilities: [gpu]
+    volumes:
+      - ./models:/app/models
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  multi-gpu-worker:
+    image: inference-worker:latest
+    environment:
+      - CUDA_VISIBLE_DEVICES=0,1  # Container sees both GPUs
+      - WORKER_ID=worker-multi-gpu
+      - GPU_INDICES=2,3
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['2', '3']
+              capabilities: [gpu]
+    volumes:
+      - ./models:/app/models
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+  monitoring:
+    image: nvidia/dcgm-exporter:latest
+    cap_add:
+      - SYS_ADMIN
+    environment:
+      - DCGM_EXPORTER_LISTEN=:9400
+    ports:
+      - "9400:9400"
+    restart: unless-stopped
+```
+
+## Advanced GPU Sharing
+
+### Time-Slicing Configuration
+
+<Metadata text="multi-gpu-docker/time-slicing" />
+
+```bash
+# Configure time-slicing to allow multiple containers per GPU
+# Create GPU sharing configuration
+cat << EOF > /tmp/gpu-sharing-config.yaml
+version: v1
+sharing:
+  timeSlicing:
+    resources:
+    - name: nvidia.com/gpu
+      replicas: 2  # Allow 2 containers per GPU
+EOF
+
+# Apply configuration
+sudo cp /tmp/gpu-sharing-config.yaml /etc/nvidia-container-runtime/config.toml
+sudo systemctl restart docker
+```
+
+### MIG Support for A100/H100
+
+<Metadata text="multi-gpu-docker/mig-setup" />
+
+```bash
+# Enable MIG mode on GPU 0
+sudo nvidia-smi -i 0 -mig 1
+
+# Create MIG instances (2x 3g.20gb)
+sudo nvidia-smi mig -i 0 -cgi 9,9
+
+# Create compute instances  
+sudo nvidia-smi mig -i 0 -gi 0 -cci 0
+sudo nvidia-smi mig -i 0 -gi 1 -cci 0
+
+# List MIG instances
+nvidia-smi mig -lgip
+
+# Use in container
+docker run --gpus '"device=MIG-12345678-1234-1234-1234-123456789abc"' my-image
+```
+
+## Automated Deployment
+
+### GPU Auto-Allocation Script
+
+<Metadata text="multi-gpu-docker/auto-allocator" />
+
+```bash
+#!/bin/bash
+# auto_gpu_allocator.sh - Automatically deploy containers across all GPUs
+
+set -euo pipefail
+
+# Configuration
+WORKER_IMAGE="${WORKER_IMAGE:-inference-worker:latest}"
+CONTAINERS_PER_GPU="${CONTAINERS_PER_GPU:-1}"
+WORKER_CODE="${WORKER_CODE:-your-worker-code}"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+log() {
+    echo -e "${GREEN}[$(date '+%Y-%m-%d %H:%M:%S')]${NC} $1"
+}
+
+warn() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+error() {
+    echo -e "${RED}[ERROR]${NC} $1" >&2
+}
+
+# Check prerequisites
+check_prerequisites() {
+    log "Checking prerequisites..."
+    
+    if ! command -v nvidia-smi &> /dev/null; then
+        error "nvidia-smi not found. Please install NVIDIA drivers."
+        exit 1
+    fi
+    
+    if ! command -v docker &> /dev/null; then
+        error "Docker not found. Please install Docker."
+        exit 1
+    fi
+    
+    # Test GPU access in Docker
+    if ! docker run --rm --gpus all nvidia/cuda:11.8-base-ubuntu20.04 nvidia-smi &> /dev/null; then
+        error "Cannot access GPUs in Docker. Check nvidia-container-toolkit installation."
+        exit 1
+    fi
+    
+    log "Prerequisites check passed ✓"
+}
+
+# Get GPU information
+get_gpu_info() {
+    log "Detecting GPU configuration..."
+    
+    TOTAL_GPUS=$(nvidia-smi -L | wc -l)
+    
+    if [ "$TOTAL_GPUS" -eq 0 ]; then
+        error "No GPUs detected"
+        exit 1
+    fi
+    
+    log "Detected $TOTAL_GPUS GPU(s)"
+    nvidia-smi --query-gpu=index,name,memory.total --format=csv
+}
+
+# Deploy containers
+deploy_containers() {
+    log "Deploying $CONTAINERS_PER_GPU container(s) per GPU..."
+    
+    local deployed_count=0
+    
+    for gpu_index in $(seq 0 $((TOTAL_GPUS - 1))); do
+        for instance in $(seq 1 $CONTAINERS_PER_GPU); do
+            local container_name="inference-worker-gpu${gpu_index}-${instance}"
+            
+            log "Starting $container_name on GPU $gpu_index"
+            
+            # Remove existing container if exists
+            docker rm -f "$container_name" 2>/dev/null || true
+            
+            # Start new container
+            docker run -d \
+                --name "$container_name" \
+                --gpus "\"device=$gpu_index\"" \
+                --restart unless-stopped \
+                -e CUDA_VISIBLE_DEVICES=0 \
+                -e WORKER_ID="$container_name" \
+                -e WORKER_CODE="$WORKER_CODE" \
+                -e GPU_INDEX="$gpu_index" \
+                -v "$(pwd)/models:/app/models" \
+                -v "$(pwd)/logs:/app/logs" \
+                "$WORKER_IMAGE"
+            
+            # Wait for container to start
+            sleep 5
+            
+            # Verify container is running
+            if docker ps | grep -q "$container_name"; then
+                log "✓ $container_name started successfully"
+                ((deployed_count++))
+            else
+                error "✗ Failed to start $container_name"
+                docker logs "$container_name" | tail -10
+            fi
+        done
+    done
+    
+    log "Deployment complete! $deployed_count containers deployed across $TOTAL_GPUS GPUs"
+}
+
+# Monitor deployment
+monitor_containers() {
+    log "Container status:"
+    docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" | grep inference-worker || warn "No inference workers found"
+    
+    log "GPU utilization:"
+    nvidia-smi --query-gpu=index,utilization.gpu,memory.used,memory.total --format=csv
+}
+
+# Main execution
+main() {
+    log "Starting GPU container auto-deployment"
+    
+    check_prerequisites
+    get_gpu_info
+    deploy_containers
+    monitor_containers
+    
+    log "Auto-deployment completed successfully! 🚀"
+    log "Use 'docker logs <container_name>' to view individual container logs"
+    log "Use 'nvidia-smi' to monitor GPU utilization"
+}
+
+# Run main function
+main "$@"
+```
+
+## Monitoring and Management
+
+### Real-time Monitoring Dashboard
+
+<Metadata text="multi-gpu-docker/monitoring-script" />
+
+```bash
+#!/bin/bash
+# gpu_monitor.sh - Real-time GPU and container monitoring
+
+REFRESH_INTERVAL=5
+
+while true; do
+    clear
+    echo "=== GPU & Container Monitoring Dashboard ==="
+    echo "Last updated: $(date)"
+    echo "Refresh interval: ${REFRESH_INTERVAL}s"
+    echo
+    
+    echo "🖥️  GPU STATUS"
+    echo "─────────────────────────────────────────────────"
+    nvidia-smi --query-gpu=index,name,utilization.gpu,memory.used,memory.total,temperature.gpu \
+        --format=csv,noheader,nounits | \
+        awk -F', ' '{printf "GPU %s: %s | Util: %s%% | Mem: %s/%sMB | Temp: %s°C\n", $1, $2, $3, $4, $5, $6}'
+    echo
+    
+    echo "🐳 CONTAINER STATUS"
+    echo "─────────────────────────────────────────────────"
+    docker ps --format "table {{.Names}}\t{{.Status}}\t{{.RunningFor}}" | grep inference-worker
+    echo
+    
+    echo "📊 CONTAINER RESOURCES"
+    echo "─────────────────────────────────────────────────"
+    docker stats --no-stream --format "table {{.Container}}\t{{.CPUPerc}}\t{{.MemUsage}}" | grep inference-worker
+    
+    sleep $REFRESH_INTERVAL
+done
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="GPU Not Detected in Container">
+    **Symptoms:** `nvidia-smi` works on host but not in container
+    
+    **Solutions:**
+    1. Verify nvidia-container-toolkit installation
+    2. Check Docker daemon configuration
+    3. Restart Docker service
+    
+    ```bash
+    # Check nvidia runtime
+    docker info | grep nvidia
+    
+    # Test GPU access
+    docker run --rm --gpus all nvidia/cuda:11.8-base-ubuntu20.04 nvidia-smi
+    ```
+  </Accordion>
+  
+  <Accordion title="Out of Memory Errors">
+    **Symptoms:** CUDA out of memory errors despite available VRAM
+    
+    **Solutions:**
+    1. Check for memory leaks in containers
+    2. Implement proper cleanup procedures
+    3. Use memory profiling tools
+    
+    ```bash
+    # Check GPU memory usage
+    nvidia-smi
+    
+    # Clean up containers
+    docker stop $(docker ps -q --filter ancestor=inference-worker)
+    
+    # Reset GPU if needed
+    sudo nvidia-smi --gpu-reset
+    ```
+  </Accordion>
+  
+  <Accordion title="Container Startup Failures">
+    **Symptoms:** Containers exit immediately or fail to start
+    
+    **Solutions:**
+    1. Check container logs for errors
+    2. Verify image compatibility
+    3. Check resource constraints
+    
+    ```bash
+    # View container logs
+    docker logs <container_name>
+    
+    # Check container configuration
+    docker inspect <container_name>
+    
+    # Test with minimal configuration
+    docker run --rm --gpus all nvidia/cuda:11.8-base-ubuntu20.04 echo "GPU test"
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Resource Planning" icon="chart-line">
+    - Reserve 10-15% GPU memory for system operations
+    - Allocate 2-4 CPU cores per GPU
+    - Use fast NVMe storage for models
+  </Card>
+  <Card title="Container Optimization" icon="docker">
+    - Use official NVIDIA CUDA base images
+    - Implement proper health checks
+    - Optimize Dockerfile layer caching
+  </Card>
+  <Card title="Security" icon="shield">
+    - Use appropriate security contexts
+    - Set resource limits and quotas
+    - Implement network segmentation
+  </Card>
+  <Card title="Monitoring" icon="eye">
+    - Track GPU temperature and utilization
+    - Monitor container health and restarts
+    - Implement automated alerting
+  </Card>
+</CardGroup>
+
+## Production Deployment
+
+For large-scale deployments, consider:
+
+- **Kubernetes with GPU Operators** for orchestration
+- **Load balancing** with intelligent request routing
+- **High availability** with redundant workers
+- **Automated scaling** based on demand
+
+<Tip>
+Join the [Inference.net Discord community](https://discord.gg/kuzco) for support and to share your deployment experiences!
+</Tip>
+
+---
+
+**Need help?** Check our [troubleshooting guide](/troubleshooting) or join our [Discord community](/community/support) for assistance.
