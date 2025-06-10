@@ -250,23 +250,25 @@ Due to how share calculations work with integer math, you might notice small dif
 
 ### Practical Example
 
-Let's walk through a scenario:
+Let's walk through a scenario with Alice and Sam:
 
 **Initial State:**
 
-- Pool has 1,000 tokens and 1,000 shares (1:1 ratio)
-- Pool receives 100 token rewards
-- Now: 1,100 tokens, 1,000 shares (1.1:1 ratio)
+- Alice was the first delegator to a new operator pool
+- She staked 1,000 tokens and received 1,000 shares (1:1 ratio)
+- The pool operates successfully and earns 100 token rewards
+- Pool now has: 1,100 tokens, 1,000 shares (1.1:1 ratio)
 
-**You stake 100 tokens:**
+**Sam decides to join:**
 
-- Your shares = (100 / 1,100) × 1,000 = 90.90... = 90 shares (rounded down)
+- Sam stakes 100 tokens to the same pool
+- Sam's shares = (100 / 1,100) × 1,000 = 90.90... = 90 shares (rounded down)
 - Pool now has: 1,200 tokens, 1,090 shares
 
-**If you immediately unstake all shares:**
+**If Sam immediately unstakes all his shares:**
 
-- Your tokens = (90 / 1,090) × 1,200 = 99.08... = 99 tokens (rounded down)
-- The 1 token difference remains in the pool
+- Sam's tokens = (90 / 1,090) × 1,200 = 99.08... = 99 tokens (rounded down)
+- The 1 token difference remains in the pool, benefiting Alice and future delegators
 
 <Note>
   This rounding effect is minimal and only affects immediate unstaking. As you
