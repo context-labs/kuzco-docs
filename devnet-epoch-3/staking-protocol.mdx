@@ -1,11 +1,19 @@
 ---
 title: "Staking Program Overview"
-description: "Understanding how the Inference.net staking protocol works on Solana"
+description: "Understanding how the Inference.net staking protocol works"
 ---
 
 The Inference.net staking program is a Solana-based protocol that manages stake delegation, reward distribution, and economic incentives for GPU operators and token holders. This page explains the core concepts and mechanics of how the program operates.
 
 For operator or delegator guides, see [Operator Guide](/devnet-epoch-3/operator-guide) or [Delegator Guide](/devnet-epoch-3/delegator-guide).
+
+## Rationale
+
+The purpose of the Inference staking program to ensure honesty network operation for the distributed GPU cluster which comprises Inference.net. This is accomplished by establishing robust economic incentives for operators to ensure they are aligned with the network. Specifically:
+
+- Inference jobs are routed to operators based on their stake weight, incentivizing operators to maintain a high stake in the network
+- Operators may share rewards with delegators, incentivizing non GPU-owning token holders to stake in the network
+- Operators may be halted or slashed for any network or protocol violations, incentivizing operators to maintain network integrity and honest operation
 
 ## Core Components
 
@@ -18,7 +26,7 @@ Operator pools are the fundamental unit of the staking system. Each GPU operator
 - Sets economic parameters like commission rates
 - Receives stake-weighted job allocations
 
-Operators must maintain at least 10% of their pool's total stake to ensure alignment with delegators.
+Operators must maintain a specific minimum stake of their pool's total stake to ensure network economic security.
 
 ### Staking Records
 
@@ -40,11 +48,11 @@ A singleton account that manages global protocol settings:
 
 ## Understanding Pool Shares
 
-<Info>
+<Note>
   Inference.net uses a share-based accounting system to fairly distribute
   rewards. When you stake tokens, you receive shares that represent your
   proportion of the pool.
-</Info>
+</Note>
 
 ### How Shares Work
 
@@ -112,6 +120,8 @@ Alice has earned 100 tokens in rewards, while Sam would receive 99 tokens if uns
 
 ## Reward Distribution Flow
 
+Protocol rewards are distributed at a time interval referred to as an epoch. Epochs will initially be 24 hours in duration, but epoch durations can be adjusted as needed.
+
 ### Epoch-Based Rewards
 
 The protocol operates on an epoch system where rewards are distributed periodically:
@@ -120,6 +130,13 @@ The protocol operates on an epoch system where rewards are distributed periodica
 2. **Reward Record Creation**: A merkle tree of rewards is generated off-chain
 3. **Operator Claims**: Each operator claims their pool's rewards using merkle proofs
 4. **Automatic Distribution**: Rewards are split between operators (commission) and delegators
+
+<Note>
+  Pool reward claims are permissionless and can be submitted by anyone. Pool
+  reward claims must be processed sequentially from oldest to most recent. All
+  available rewards claims must be processed before any staking actions can
+  occur to maintain consistent accounting.
+</Note>
 
 ### Commission Mechanism
 
@@ -143,15 +160,13 @@ In addition to token rewards, operators earn USDC from processing inference jobs
 
 1. **Immediate Effect**: Tokens are transferred to the pool instantly
 2. **Share Calculation**: Shares are minted based on the current pool ratio
-3. **No Cooldown**: Staking has no waiting period
+3. **No Delay**: Staking has no waiting period
 4. **Minimum Requirements**: Operators must maintain their minimum stake ratio
 
 ### Unstaking Process
 
 1. **Initiate Unstake**: Convert shares to token amount and start cooldown
-2. **Cooldown Period**:
-   - Operators have longer cooldowns for stability
-   - Delegators have shorter cooldowns for flexibility
+2. **Cooldown Period**: Operators and delegators have different cooldown periods
 3. **No Rewards During Cooldown**: Tokens don't earn while unstaking
 4. **Claim Process**: After cooldown, tokens can be withdrawn
 
@@ -160,7 +175,17 @@ In addition to token rewards, operators earn USDC from processing inference jobs
   resets for all unstaking tokens.
 </Warning>
 
+### Pool Closure
+
+Operators may close a pool at their discretion. Pool closure is a permanent action and cannot be undone. If a pool has been closed, any remaining stake or commission fees can still be withdrawn.
+
 ## Security Features
+
+The staking protocol supports halting and slashing of operator pools for any identified network or protocol violations. This establishes economic incentive alignment for operators to ensure network integrity.
+
+<Warning>
+  Operators may be halted or slashed for any network or protocol violations.
+</Warning>
 
 ### Halt Mechanisms
 
@@ -168,6 +193,7 @@ The protocol includes multiple halt controls for emergency situations:
 
 - **Global Staking Halt**: Prevents all new stakes
 - **Global Withdrawal Halt**: Prevents all unstaking and claims
+- **Global Pool Creation Halt**: Prevents new pools from being created
 - **Pool-Specific Halt**: Individual pools can be halted by authorities
 
 ### Slashing Protection
@@ -176,42 +202,20 @@ The protocol includes multiple halt controls for emergency situations:
 - Delegated tokens are protected from slashing
 - Slashing requires authorization from designated authorities
 
-### Authority System
+### Program Authorities
 
 Different administrative functions are separated among authorities:
 
 - **Program Admin**: Overall protocol configuration
 - **Reward Distribution Authorities**: Manage epoch rewards
-- **Halt Authorities**: Emergency response capabilities
-- **Slashing Authorities**: Enforce performance standards
+- **Halt Authorities**: Capable of halting operator pools
+- **Slashing Authorities**: Capable of slashing operator pools
 
 ## Economic Alignment
 
 The protocol creates several layers of economic alignment:
 
-1. **Minimum Operator Stake**: Ensures operators have skin in the game
-2. **Stake-Weighted Routing**: Higher stake increases job allocation probability
+1. **Minimum Operator Stake**: Ensures operator economic incentives are aligned with the network integrity
+2. **Stake-Weighted Routing**: Higher stake increases job allocation probability, incentivizing long-term operator alignment with the network
 3. **Commission Model**: Aligns operator and delegator interests
 4. **Cooldown Periods**: Encourages long-term commitment
-
-## Pool Lifecycle
-
-### Creation
-
-- Operators create pools with initial configuration
-- Automatic staking record creation for the operator
-- Token accounts initialized for stake and fee management
-
-### Operation
-
-- Accept delegations (if enabled)
-- Process inference jobs based on stake weight
-- Accumulate rewards each epoch
-- Maintain minimum stake requirements
-
-### Closure
-
-- Operators can close pools to new stakes
-- Existing stakes can still be withdrawn
-- Rewards stop accumulating after closure
-- Pool remains on-chain for historical record
