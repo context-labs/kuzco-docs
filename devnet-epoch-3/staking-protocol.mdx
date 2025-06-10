@@ -1,0 +1,217 @@
+---
+title: "Staking Program Overview"
+description: "Understanding how the Inference.net staking protocol works on Solana"
+---
+
+The Inference.net staking program is a Solana-based protocol that manages stake delegation, reward distribution, and economic incentives for GPU operators and token holders. This page explains the core concepts and mechanics of how the program operates.
+
+For operator or delegator guides, see [Operator Guide](/devnet-epoch-3/operator-guide) or [Delegator Guide](/devnet-epoch-3/delegator-guide).
+
+## Core Components
+
+### Operator Pools
+
+Operator pools are the fundamental unit of the staking system. Each GPU operator creates a pool that:
+
+- Manages their self-stake and delegated tokens
+- Tracks performance metrics and reward distribution
+- Sets economic parameters like commission rates
+- Receives stake-weighted job allocations
+
+Operators must maintain at least 10% of their pool's total stake to ensure alignment with delegators.
+
+### Staking Records
+
+Every participant (operators and delegators) has a staking record for each pool they stake in. These records track:
+
+- Share ownership in the pool
+- Unstaking amounts and cooldown timers
+- The relationship between the staker and the pool
+
+### Pool Overview
+
+A singleton account that manages global protocol settings:
+
+- Minimum operator stake requirements
+- Unstaking cooldown periods
+- Halt statuses for security
+- Epoch and reward management
+- Authority controls for administration
+
+## Understanding Pool Shares
+
+<Info>
+  Inference.net uses a share-based accounting system to fairly distribute
+  rewards. When you stake tokens, you receive shares that represent your
+  proportion of the pool.
+</Info>
+
+### How Shares Work
+
+When you stake tokens to a pool, you don't just hold tokens - you receive **shares** that represent your ownership percentage of the pool. This system allows rewards to be distributed fairly without complex calculations for each delegator.
+
+**The key formulas:**
+
+- When staking: `shares = (your tokens / total pool tokens) × total shares`
+- When unstaking: `tokens = (your shares / total shares) × total pool tokens`
+
+### Why Share-Based Accounting?
+
+The share system enables several critical features:
+
+1. **Automatic Reward Distribution**: When rewards are added to a pool, they increase the total token amount without creating new shares. This automatically increases the value of existing shares proportionally.
+
+2. **Fair Compounding**: All participants benefit from reward compounding without requiring individual claim transactions.
+
+3. **Efficient On-Chain Operations**: The protocol can handle thousands of delegators without expensive per-user calculations.
+
+### Precision and Rounding
+
+Due to how share calculations work with integer math, you might notice small differences between what you stake and what you can immediately unstake. This is normal and expected.
+
+<Warning>
+  **Precision Rounding Example:** If you stake 100 tokens to a pool that has
+  already received rewards, you might only be able to unstake 99 tokens
+  immediately. This happens because:
+  <ul>
+    <li>The pool's share-to-token ratio is no longer 1:1 after rewards</li>
+    <li>Integer division during share calculation rounds down</li>
+    <li>The "dust" (fractional tokens) remains in the pool</li>
+  </ul>
+  This is not a loss - it's how the protocol ensures fair reward distribution.
+</Warning>
+
+<Note>
+  The $INT token will have 9 decimal places of precision, so any rounding occurs
+  at very small fractions of a token (e.g., 0.000000001 tokens).
+</Note>
+
+### Practical Example
+
+Let's walk through a scenario with Alice and Sam:
+
+**Initial State:**
+
+- Alice stakes 1,000 tokens to a new pool
+- She receives 1,000 shares (1:1 ratio)
+- The pool earns 100 tokens in rewards
+- Pool now has: 1,100 tokens, 1,000 shares
+
+**Sam joins the pool:**
+
+- Sam stakes 100 tokens
+- Sam's shares = (100 / 1,100) × 1,000 = 90 shares (rounded down)
+- Pool now has: 1,200 tokens, 1,090 shares
+
+**Share values:**
+
+- Alice's 1,000 shares = (1,000 / 1,090) × 1,200 = 1,100 tokens
+- Sam's 90 shares = (90 / 1,090) × 1,200 = 99 tokens
+
+Alice has earned 100 tokens in rewards, while Sam would receive 99 tokens if unstaking immediately (with 1 token lost to rounding).
+
+## Reward Distribution Flow
+
+### Epoch-Based Rewards
+
+The protocol operates on an epoch system where rewards are distributed periodically:
+
+1. **Epoch Finalization**: Administrators signal the end of an epoch
+2. **Reward Record Creation**: A merkle tree of rewards is generated off-chain
+3. **Operator Claims**: Each operator claims their pool's rewards using merkle proofs
+4. **Automatic Distribution**: Rewards are split between operators (commission) and delegators
+
+### Commission Mechanism
+
+Operators set commission rates (0-100%) that determine their share of epoch rewards:
+
+- Commission is deducted before rewards are distributed to the pool
+- Operators can choose to auto-stake their commission for compounding
+- Commission rates can be updated but take effect in the following epoch
+
+### USDC Revenue Distribution
+
+In addition to token rewards, operators earn USDC from processing inference jobs:
+
+- USDC payments go directly to the operator's designated payout wallet
+- This revenue stream is separate from token rewards
+- Delegators do not receive a share of USDC revenue
+
+## Staking and Unstaking Mechanics
+
+### Staking Process
+
+1. **Immediate Effect**: Tokens are transferred to the pool instantly
+2. **Share Calculation**: Shares are minted based on the current pool ratio
+3. **No Cooldown**: Staking has no waiting period
+4. **Minimum Requirements**: Operators must maintain their minimum stake ratio
+
+### Unstaking Process
+
+1. **Initiate Unstake**: Convert shares to token amount and start cooldown
+2. **Cooldown Period**:
+   - Operators have longer cooldowns for stability
+   - Delegators have shorter cooldowns for flexibility
+3. **No Rewards During Cooldown**: Tokens don't earn while unstaking
+4. **Claim Process**: After cooldown, tokens can be withdrawn
+
+<Warning>
+  If you initiate additional unstaking while tokens are in cooldown, the timer
+  resets for all unstaking tokens.
+</Warning>
+
+## Security Features
+
+### Halt Mechanisms
+
+The protocol includes multiple halt controls for emergency situations:
+
+- **Global Staking Halt**: Prevents all new stakes
+- **Global Withdrawal Halt**: Prevents all unstaking and claims
+- **Pool-Specific Halt**: Individual pools can be halted by authorities
+
+### Slashing Protection
+
+- Only operator self-stake can be slashed for violations
+- Delegated tokens are protected from slashing
+- Slashing requires authorization from designated authorities
+
+### Authority System
+
+Different administrative functions are separated among authorities:
+
+- **Program Admin**: Overall protocol configuration
+- **Reward Distribution Authorities**: Manage epoch rewards
+- **Halt Authorities**: Emergency response capabilities
+- **Slashing Authorities**: Enforce performance standards
+
+## Economic Alignment
+
+The protocol creates several layers of economic alignment:
+
+1. **Minimum Operator Stake**: Ensures operators have skin in the game
+2. **Stake-Weighted Routing**: Higher stake increases job allocation probability
+3. **Commission Model**: Aligns operator and delegator interests
+4. **Cooldown Periods**: Encourages long-term commitment
+
+## Pool Lifecycle
+
+### Creation
+
+- Operators create pools with initial configuration
+- Automatic staking record creation for the operator
+- Token accounts initialized for stake and fee management
+
+### Operation
+
+- Accept delegations (if enabled)
+- Process inference jobs based on stake weight
+- Accumulate rewards each epoch
+- Maintain minimum stake requirements
+
+### Closure
+
+- Operators can close pools to new stakes
+- Existing stakes can still be withdrawn
+- Rewards stop accumulating after closure
+- Pool remains on-chain for historical record
