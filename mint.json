@@ -58,6 +58,7 @@
       "group": "Epoch 3",
       "pages": [
         "devnet-epoch-3/overview",
+        "devnet-epoch-3/airdrop",
         "devnet-epoch-3/staking-protocol",
         "devnet-epoch-3/operator-guide",
         "devnet-epoch-3/delegator-guide"
