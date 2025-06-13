@@ -229,54 +229,57 @@ The protocol creates several layers of economic alignment:
 ## FAQ
 
 **Q: Can I lose my delegated tokens?**<br/>
-A: No, delegated tokens cannot be slashed. Only operator self-stake is at risk of slashing for network violations. Your delegated tokens are protected from any penalties imposed on operators. However, you may stop earning rewards if an operator's pool is halted or closed.
+A: No. Only operators can be slashed for violations. Your tokens are safe, though rewards may stop if a pool is halted or closed.
 
 **Q: How often are rewards distributed?**<br/>
-A: Rewards are distributed through an epoch-based system, initially with 24-hour epochs. However, you don't automatically receive rewards in your wallet - they accumulate in the pool and increase the value of your shares. When you unstake, you receive your proportional share of all accumulated rewards. You can also see your earned rewards reflected in the increased token value of your shares.
+A: Rewards accumulate continuously in 24-hour epochs, increasing your share value. You receive them when unstaking - no manual claiming needed.
 
 **Q: Can I delegate to multiple pools?**<br/>
-A: Yes, you can delegate to as many operator pools as you wish. Each delegation creates a separate staking record, allowing you to diversify across multiple operators with different commission rates, performance levels, and risk profiles. You can manage each delegation independently.
+A: Yes. Delegate to as many operators as you want, managing each delegation independently.
 
-**Q: What happens if an operator closes their pool?**<br/>
-A: When an operator closes their pool, the pool stops earning rewards starting from the closure epoch. However, you can still claim any rewards earned up to the closure point and withdraw your stake. The operator cannot unstake below their minimum requirement until the pool is officially closed, giving delegators time to exit if desired.
+**Q: What if an operator closes their pool?**<br/>
+A: The pool stops earning rewards but you can still withdraw your stake and claim earned rewards.
 
 **Q: How long is the unstaking cooldown?**<br/>
-A: Cooldown periods differ between operators and delegators, with delegators typically having shorter cooldown periods. The exact duration is set by protocol governance and can be adjusted over time. During cooldown, your tokens don't earn rewards, so plan your unstaking accordingly.
+A: Delegators have shorter cooldowns than operators (exact duration set by governance). Tokens don't earn during cooldown.
 
 **Q: Do I need to manually claim rewards?**<br/>
-A: No, individual delegators don't need to claim rewards manually. The protocol uses an automatic reward distribution system where rewards increase the value of your shares. However, operators must claim their pool's rewards using merkle proofs each epoch - this process is permissionless and can be done by anyone.
+A: No. Rewards automatically increase your share value. Only operators claim pool rewards using merkle proofs.
 
-**Q: What happens if I try to unstake while I already have tokens in cooldown?**<br/>
-A: If you initiate a new unstake while you already have tokens cooling down, the cooldown timer resets for ALL your unstaking tokens. For example, if you have tokens with 12 hours left to claim and you unstake more, all tokens will need to wait the full cooldown period again.
+**Q: Why are staking actions sometimes disabled?**<br/>
+A: All rewards must be claimed before any staking changes to ensure fair distribution.
 
-**Q: Can I cancel my unstaking and re-stake my tokens?**<br/>
-A: Yes, you can cancel unstaking at any time during the cooldown period. Your tokens will be immediately re-staked and begin earning rewards again. This is useful if you change your mind or if you unstaked by mistake.
+**Q: What if I unstake while already in cooldown?**<br/>
+A: The timer resets for ALL your unstaking tokens. Plan accordingly.
 
-**Q: How are commission rates handled when they change?**<br/>
-A: Commission rate changes only take effect in the following epoch, not immediately. This gives delegators advance notice of changes. If an operator sets a new commission rate, it won't affect the current epoch's rewards - only future epochs.
+**Q: Can I cancel unstaking?**<br/>
+A: Yes. Tokens immediately re-stake and earn rewards again.
+
+**Q: When do commission rate changes take effect?**<br/>
+A: Next epoch after all rewards are claimed, giving you advance notice.
 
 **Q: What's the difference between token rewards and USDC revenue?**<br/>
-A: Token rewards (in $INT) are distributed proportionally between operators and delegators based on the commission rate. USDC revenue comes from actual inference job payments and goes directly to the operator's designated payout wallet - delegators don't receive a share of USDC earnings.
+A: Token rewards ($INT) are shared based on commission rate. USDC revenue goes directly to operators only.
 
-**Q: Can operators change their minimum stake requirement?**<br/>
-A: No, the minimum operator stake percentage is set globally by the protocol, not by individual operators. This ensures consistent economic security across all pools. Operators must maintain this minimum percentage of their pool's total stake at all times.
+**Q: Can operators change minimum stake requirements?**<br/>
+A: No. It's a global protocol setting ensuring consistent security.
 
-**Q: What happens if an operator falls below the minimum stake requirement?**<br/>
-A: If an operator's stake percentage falls below the minimum (due to large delegations), they cannot reduce their stake further and the pool cannot accept new delegations until the operator increases their stake or existing delegators withdraw enough to restore the proper ratio.
+**Q: What if an operator falls below minimum stake?**<br/>
+A: They can't reduce stake further and the pool can't accept new delegations until the ratio is restored.
 
-**Q: Are there any fees for staking, unstaking, or claiming?**<br/>
-A: The protocol itself doesn't charge fees, but you'll pay standard Solana transaction fees (typically very small). All protocol rewards and commissions are distributed as designed without additional platform fees.
+**Q: Are there fees for staking/unstaking?**<br/>
+A: Only standard Solana transaction fees (minimal). No protocol fees.
 
-**Q: How do I know if my operator is performing well?**<br/>
-A: Operator performance affects job allocation, which impacts reward generation. Look for operators with consistent reward history, reasonable commission rates, high uptime, and stake retention. The stake-weighted routing system naturally rewards well-performing operators with more jobs.
+**Q: How do I evaluate operator performance?**<br/>
+A: Check reward history, commission rates, uptime, and stake retention. Better operators get more jobs and rewards.
 
-**Q: Can the protocol be upgraded or changed?**<br/>
-A: Yes, the protocol can be upgraded as necessary to introduce any new features or fix any bugs.
+**Q: Can the protocol be upgraded?**<br/>
+A: Yes, for new features or bug fixes as needed.
 
-**Q: What does it mean when an operator pool gets "halted"?**<br/>
-A: When an operator pool is halted by authorized authorities, the operator cannot perform most actions including staking, unstaking, claiming rewards, or closing their pool. However, delegators can still unstake and claim their tokens - they're not trapped in a halted pool. Halting is a security measure used when an operator violates network rules or protocols. The halt protects the network while allowing delegators to exit if they choose to. Halted operators will not receive inference requests while they are halted.
+**Q: What does "halted" mean?**<br/>
+A: Halted operators can't perform actions or receive jobs due to violations. Delegators can still exit freely.
 
-**Q: How does slashing work and what triggers it?**<br/>
-A: Slashing is the permanent removal of tokens from an operator's self-stake as punishment for serious network violations. Only the operator's own staked tokens can be slashed - delegated tokens are not at risk. Slashing can only be executed by designated slashing authorities and typically occurs for severe violations like attempting to manipulate the network, providing false computational results, or other malicious behavior. The slashed tokens are removed from the pool entirely, which may affect the pool's total stake but doesn't directly impact delegator token amounts.
+**Q: How does slashing work?**<br/>
+A: Authorities can permanently remove operator tokens for serious violations. Only operator stake is at risk, never delegated tokens.
 
-For additional support or questions, join our [Discord](https://discord.gg/kuzco) community.
+For support, join our [Discord](https://discord.gg/kuzco) community.
