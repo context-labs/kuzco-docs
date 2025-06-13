@@ -57,7 +57,10 @@
     {
       "group": "Epoch 3",
       "pages": [
-        "devnet-epoch-3/overview"
+        "devnet-epoch-3/overview",
+        "devnet-epoch-3/staking-protocol",
+        "devnet-epoch-3/operator-guide",
+        "devnet-epoch-3/delegator-guide"
       ]
     },
     {
@@ -70,11 +73,9 @@
     },
     {
       "group": "Advanced",
-      "pages": [
-        "advanced/docker"
-      ]
+      "pages": ["advanced/docker"]
     },
-    
+
     {
       "group": "Community & Support",
       "pages": ["community/discord-roles", "community/support", "community/faq"]
