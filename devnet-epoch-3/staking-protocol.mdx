@@ -229,57 +229,57 @@ The protocol creates several layers of economic alignment:
 ## FAQ
 
 **Q: Can I lose my delegated tokens?**<br/>
-A: No. Only operators can be slashed for violations. Your tokens are safe, though rewards may stop if a pool is halted or closed.
+A: No. Only operators can be slashed for violations. Delegated tokens are protected from slashing, and may be withdrawn from halted or closed pools.
 
 **Q: How often are rewards distributed?**<br/>
-A: Rewards accumulate continuously in 24-hour epochs, increasing your share value. You receive them when unstaking - no manual claiming needed.
+A: Rewards accumulate continuously each epoch, automatically compounding your share value. You receive them when unstaking - no manual claiming needed.
 
 **Q: Can I delegate to multiple pools?**<br/>
-A: Yes. Delegate to as many operators as you want, managing each delegation independently.
+A: Yes. You can delegate to as many operators as you want, and manage each delegation independently.
 
 **Q: What if an operator closes their pool?**<br/>
 A: The pool stops earning rewards but you can still withdraw your stake and claim earned rewards.
 
 **Q: How long is the unstaking cooldown?**<br/>
-A: Delegators have shorter cooldowns than operators (exact duration set by governance). Tokens don't earn during cooldown.
+A: Delegators have shorter cooldowns than operators (exact duration set by protocol authorities). Tokens don't earn rewards during the unstaking cooldown period.
 
 **Q: Do I need to manually claim rewards?**<br/>
-A: No. Rewards automatically increase your share value. Only operators claim pool rewards using merkle proofs.
+A: No. Rewards automatically compound the value of your staked tokens.
 
-**Q: Why are staking actions sometimes disabled?**<br/>
-A: All rewards must be claimed before any staking changes to ensure fair distribution.
+**Q: Why are staking actions sometimes when a pool has unclaimed rewards?**<br/>
+A: All rewards must be claimed to ensure fair reward distribution before stake changes occur.
 
-**Q: What if I unstake while already in cooldown?**<br/>
-A: The timer resets for ALL your unstaking tokens. Plan accordingly.
+**Q: What if I unstake again while already in cooldown?**<br/>
+A: The timer resets for ALL your unstaking tokens, for example if you unstake 5 tokens and then halfway through the unstake delay you unstake another 5 tokens, the unstake delay will restart for all 10 tokens.
 
 **Q: Can I cancel unstaking?**<br/>
-A: Yes. Tokens immediately re-stake and earn rewards again.
+A: Yes. Cancelling an unstake operation will immediately re-stake the tokens and they will start earning rewards again.
 
 **Q: When do commission rate changes take effect?**<br/>
-A: Next epoch after all rewards are claimed, giving you advance notice.
+A: Commission rate changes take effect in the epoch following when the change occurred, once all reward claims for that pool have been completed.
 
 **Q: What's the difference between token rewards and USDC revenue?**<br/>
-A: Token rewards ($INT) are shared based on commission rate. USDC revenue goes directly to operators only.
+A: Token rewards ($INT) are distributed to all pools by the protocol and shared between operators and delegators. USDC revenue is paid directly to the operators for completed inference tasks.
 
 **Q: Can operators change minimum stake requirements?**<br/>
-A: No. It's a global protocol setting ensuring consistent security.
+A: No. The operator minimum stake requirement is set globally and applies to all operator pools.
 
-**Q: What if an operator falls below minimum stake?**<br/>
+**Q: What if an operator falls below the minimum stake threshold?**<br/>
 A: They can't reduce stake further and the pool can't accept new delegations until the ratio is restored.
 
 **Q: Are there fees for staking/unstaking?**<br/>
-A: Only standard Solana transaction fees (minimal). No protocol fees.
+A: No. The protocol does not charge fees for any transactions. Only standard Solana transaction fees apply.
 
 **Q: How do I evaluate operator performance?**<br/>
 A: Check reward history, commission rates, uptime, and stake retention. Better operators get more jobs and rewards.
 
 **Q: Can the protocol be upgraded?**<br/>
-A: Yes, for new features or bug fixes as needed.
+A: Yes, Inference.net may upgrade the program as necessary to fix bugs and add new features.
 
-**Q: What does "halted" mean?**<br/>
-A: Halted operators can't perform actions or receive jobs due to violations. Delegators can still exit freely.
+**Q: What does it mean if an operator is halted?**<br/>
+A: Operator are halted for suspected network violations. Halting prevents specific actions such as operator unstaking while the situation is investigated.
 
 **Q: How does slashing work?**<br/>
-A: Authorities can permanently remove operator tokens for serious violations. Only operator stake is at risk, never delegated tokens.
+A: Authorities can permanently remove operator tokens for serious violations. Only operator stake is at risk, delegator tokens are protected from slashing.
 
 For support, join our [Discord](https://discord.gg/kuzco) community.
