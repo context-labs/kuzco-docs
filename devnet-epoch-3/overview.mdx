@@ -5,6 +5,12 @@ description: "Inference.net Epoch 3: Solana protocol, stake-weighted routing, an
 
 On June 6th, 2025, Inference.net will launch Devnet Epoch 3, introducing significant protocol changes designed to improve network scalability, operator experience, and economic alignment. This post details the technical improvements, new staking mechanisms, and operational changes that will define this next phase of Inference.net.
 
+<Warning>
+  The Inference.net Staking Protocol is being tested on Solana Devnet with test
+  tokens. These tokens have no monetary value and should not be used for
+  real-world transactions or bought or sold by anyone.
+</Warning>
+
 ## Preparing for Epoch 3
 
 1. Verify your hardware meets the [minimum requirements](/getting-started/hardware)
@@ -21,7 +27,7 @@ Epoch 3 will be rolled out in phases, with each phase bringing new features and 
 | **June 6, 2025**   | **Network Upgrade**   | • Auto-update system activation for all node types<br/>• Enhanced GPU detection and validation<br/>• Unified inference engine<br/>• New simplified node deployment instructions<br/>• Unknown GPUs blocked from joining network |
 | **June 13, 2025**  | **Economic Layer**    | • $INT-DEV token airdrop to eligible operators<br/>• Staking protocol goes live<br/>• Stake-weighted job routing begins<br/>• Operator pool creation enabled<br/>• Delegation functionality activated                           |
 | **June 20, 2025**  | **Extended Features** | • Bonus point system for community contributions<br/>• Additional point-earning opportunities<br/>• Enhanced monitoring and analytics<br/>• Reputation system testing begins                                                    |
-| **Late June 2025** | **Advanced Features** | • Full reputation scoring activation<br/>• Performance-based routing adjustments<br/>• Slashing mechanism testing (devnet only)<br/>• Advanced operator pool management features                                              |
+| **Late June 2025** | **Advanced Features** | • Full reputation scoring activation<br/>• Performance-based routing adjustments<br/>• Slashing mechanism testing (devnet only)<br/>• Advanced operator pool management features                                                |
 
 ## Core Protocol Improvements
 
@@ -143,19 +149,18 @@ During Epoch 3, operators will interact with two distinct reward mechanisms:
 - May be awarded for non-compute contributions (guides, community help)
 - Serves as the primary performance metric during the testing phase
 
-### $INT-DEV Tokens (On-chain)
+### $INT-DEV Tokens (On-chain - Solana Devnet only)
 
-- Distributed daily at midnight UTC
+- Distributed for testing purposes via airdrop and reward distributions
 - Based on stake-weighted job completion
 - Required for staking to receive job allocations
-- <span style={{color: "red"}}>Exists only on Solana Devnet with no monetary value</span>
 
 This dual approach allows us to test the on-chain protocol's economic mechanisms while maintaining flexibility in reward distribution during the development phase.
 
 <Warning>
-  \$INT-DEV tokens are test tokens with no monetary value. All staking and rewards during Epoch 3 are for testing purposes only.
-  
-   $INT-DEV accumlated during Epoch 3 will not be transferable to mainnet, and will have no impact on your mainnet balance.
+  The Inference.net Staking Protocol is being tested on Solana Devnet with test
+  tokens. These tokens have no monetary value and should not be used for
+  real-world transactions or bought or sold by anyone.
 </Warning>
 
 ## Reputation System (Coming Later in Epoch 3)
